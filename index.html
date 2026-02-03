@@ -760,12 +760,22 @@
       return 'var(--arsenal-red)';
     }
 
-    async function fetchCompetition(comp) {
+    function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function fetchCompetition(comp, retries = 3) {
       const url = `${API_BASE}?series_ticker=${comp.series}&status=open&limit=100`;
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${comp.series}`);
-      const data = await resp.json();
-      return data.markets || [];
+      for (let attempt = 0; attempt < retries; attempt++) {
+        if (attempt > 0) await delay(1500 * attempt);
+        const resp = await fetch(url);
+        if (resp.status === 429) {
+          console.warn(`Rate limited for ${comp.series}, retry ${attempt + 1}...`);
+          continue;
+        }
+        if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${comp.series}`);
+        const data = await resp.json();
+        return data.markets || [];
+      }
+      throw new Error(`Rate limited for ${comp.series} after ${retries} retries`);
     }
 
     function renderTrophyCard(comp, arsenalMarket, competitors) {
@@ -881,13 +891,16 @@
       status.textContent = 'Fetching from Kalshi...';
 
       try {
-        const results = await Promise.all(COMPETITIONS.map(c => fetchCompetition(c)));
         const probs = {};
         let gridHtml = '';
 
+        // Fetch sequentially with delays to avoid Kalshi rate limits
         for (let i = 0; i < COMPETITIONS.length; i++) {
+          if (i > 0) await delay(500);
           const comp = COMPETITIONS[i];
-          const markets = results[i];
+          status.textContent = `Fetching ${comp.compName}...`;
+
+          const markets = await fetchCompetition(comp);
 
           // Find Arsenal
           const arsenalMarket = markets.find(m => m.ticker === comp.arsenalTicker);
