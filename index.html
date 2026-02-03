@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0b0c10">
+  <meta name="description" content="Live Arsenal quadruple odds from Kalshi prediction markets. Track Premier League, Champions League, FA Cup & EFL Cup probabilities in real time.">
+
+  <!-- Open Graph / Link Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Arsenal Quad Tracker">
+  <meta property="og:description" content="Can Arsenal win all four? Live odds from Kalshi for the Premier League, Champions League, FA Cup & Carabao Cup.">
+  <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
+  <meta property="og:url" content="https://jmorcos3.github.io/arsenal-quad-odds/">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Arsenal Quad Tracker">
+  <meta name="twitter:description" content="Can Arsenal win all four? Live odds from Kalshi.">
+  <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
+
+  <title>Arsenal Quad Odds Tracker</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --arsenal-red: #EF0107;
+      --arsenal-red-dark: #9b0004;
+      --arsenal-navy: #063672;
+      --arsenal-gold: #EDBB00;
+      --bg-dark: #0b0c10;
+      --bg-card: #14171f;
+      --bg-card-alt: #191d28;
+      --text-primary: #f1f5f9;
+      --text-secondary: #7a8599;
+      --border-color: #222838;
+      --green: #22c55e;
+      --amber: #f59e0b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Arsenal-themed top stripe */
+    .top-stripe {
+      height: 4px;
+      background: linear-gradient(90deg, var(--arsenal-red) 0%, var(--arsenal-red) 40%, var(--arsenal-gold) 50%, var(--arsenal-navy) 60%, var(--arsenal-navy) 100%);
+    }
+
+    /* Background with cannon watermark feel */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse at 15% -10%, rgba(239,1,7,0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 110%, rgba(6,54,114,0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(239,1,7,0.02) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .crest-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .crest-area .cannon {
+      font-size: 2rem;
+      filter: drop-shadow(0 0 8px rgba(239,1,7,0.4));
+    }
+
+    header .badge {
+      display: inline-block;
+      background: var(--arsenal-red);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+    }
+
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.4rem;
+    }
+
+    header h1 .highlight {
+      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    header .subtitle a {
+      color: var(--arsenal-gold);
+      text-decoration: none;
+    }
+
+    /* Refresh bar */
+    .refresh-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+    }
+
+    .refresh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-red-dark));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1.2rem;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.02em;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(239,1,7,0.35);
+    }
+
+    .refresh-btn:active { transform: translateY(0); }
+
+    .refresh-btn.loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .refresh-btn .spin {
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+
+    .refresh-btn.loading .spin {
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .refresh-status {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .refresh-status.success { color: var(--green); }
+    .refresh-status.error { color: var(--arsenal-red); }
+
+    /* Section title */
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--arsenal-red);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title .accent-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--arsenal-red);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Trophy cards grid */
+    .trophy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .trophy-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.25rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .trophy-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--arsenal-red), var(--arsenal-gold));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .trophy-card:hover::before { opacity: 1; }
+
+    .trophy-card:hover {
+      border-color: rgba(239,1,7,0.35);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .trophy-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .trophy-card .comp-name {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.2rem;
+    }
+
+    .trophy-card .trophy-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+
+    .trophy-card .arsenal-odds {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .trophy-card .arsenal-odds .pct {
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .trophy-card .arsenal-odds .price-tag {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .trophy-card .prob-bar {
+      width: 100%;
+      height: 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 3px;
+      margin: 0.6rem 0;
+      overflow: hidden;
+    }
+
+    .trophy-card .prob-bar .fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+
+    .trophy-card .status-pill {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-active {
+      background: rgba(34,197,94,0.15);
+      color: var(--green);
+    }
+
+    .status-favorite {
+      background: rgba(239,1,7,0.15);
+      color: var(--arsenal-red);
+    }
+
+    /* Competitor list inside trophy card */
+    .competitors {
+      margin-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.6rem;
+    }
+
+    .competitors .comp-header {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .competitor-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.2rem 0;
+    }
+
+    .competitor-row .team-name {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .competitor-row .team-odds {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .trophy-card .kalshi-link {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .trophy-card .kalshi-link:hover {
+      opacity: 1;
+      color: var(--arsenal-gold);
+    }
+
+    /* Quad odds section */
+    .quad-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .quad-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quad-card.featured {
+      border-color: rgba(239,1,7,0.25);
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(239,1,7,0.04) 50%, rgba(6,54,114,0.04) 100%);
+    }
+
+    .quad-card.featured::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--arsenal-red), var(--arsenal-gold), var(--arsenal-navy));
+    }
+
+    .quad-card .quad-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.2rem;
+    }
+
+    .quad-card .quad-name {
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+
+    .quad-card .quad-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      max-width: 600px;
+    }
+
+    .quad-card .quad-trophies {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .quad-card .quad-trophies .qt {
+      background: rgba(239,1,7,0.08);
+      border: 1px solid rgba(239,1,7,0.2);
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .quad-card .quad-odds {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .quad-card .quad-odds .big-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+    }
+
+    .quad-card .quad-odds .calc-note {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+    }
+
+    /* Multiple trophies section */
+    .multiples-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .multiples-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .multi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .multi-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--arsenal-red);
+      opacity: 0.3;
+    }
+
+    .multi-card .multi-count {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.2rem;
+    }
+
+    .multi-card .multi-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .multi-card .multi-odds {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 0.2rem;
+    }
+
+    .multi-card .multi-note {
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    /* Method note */
+    .method-note {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .method-note h3 {
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+      color: var(--arsenal-gold);
+    }
+
+    .method-note p {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+      border-top: 2px solid var(--arsenal-red);
+    }
+
+    footer p {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    footer a {
+      color: var(--arsenal-gold);
+      text-decoration: none;
+    }
+
+    /* Safe area for iPhone notch */
+    .container {
+      padding-left: max(1.5rem, env(safe-area-inset-left));
+      padding-right: max(1.5rem, env(safe-area-inset-right));
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    }
+
+    /* Responsive */
+    @media (max-width: 850px) {
+      .trophy-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 500px) {
+      .container { padding: 1.25rem 1rem; }
+      header h1 { font-size: 1.7rem; }
+      .trophy-grid { grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+      .trophy-card { padding: 1rem; }
+      .trophy-card .icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+      .trophy-card .comp-name { font-size: 0.6rem; }
+      .trophy-card .trophy-title { font-size: 0.85rem; margin-bottom: 0.5rem; }
+      .trophy-card .arsenal-odds .pct { font-size: 1.5rem; }
+      .trophy-card .arsenal-odds .price-tag { font-size: 0.65rem; }
+      .trophy-card .status-pill { font-size: 0.5rem; padding: 0.15rem 0.4rem; }
+      .competitors .comp-header { font-size: 0.55rem; }
+      .competitor-row .team-name,
+      .competitor-row .team-odds { font-size: 0.65rem; }
+      .trophy-card .kalshi-link { font-size: 0.6rem; }
+      .multiples-grid { grid-template-columns: 1fr 1fr 1fr; gap: 0.65rem; }
+      .multi-card { padding: 1rem 0.5rem; }
+      .multi-card .multi-count { font-size: 1.6rem; }
+      .multi-card .multi-label { font-size: 0.65rem; }
+      .multi-card .multi-odds { font-size: 1.2rem; }
+      .multi-card .multi-note { font-size: 0.55rem; }
+      .quad-card { padding: 1.25rem; }
+      .quad-card .quad-name { font-size: 1.1rem; }
+      .quad-card .quad-desc { font-size: 0.75rem; }
+      .quad-card .quad-odds .big-number { font-size: 2rem; }
+      .quad-card .quad-trophies .qt { font-size: 0.6rem; padding: 0.25rem 0.5rem; }
+      .refresh-btn { font-size: 0.75rem; padding: 0.5rem 1rem; }
+      .method-note p { font-size: 0.7rem; }
+    }
+
+    @media (max-width: 360px) {
+      .trophy-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-stripe"></div>
+  <div class="container">
+    <header>
+      <div class="crest-area">
+        <span class="badge">2025-26 Season</span>
+      </div>
+      <h1>Arsenal <span class="highlight">Quad Tracker</span></h1>
+      <p class="subtitle">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets</p>
+    </header>
+
+    <!-- Refresh -->
+    <div class="refresh-bar">
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshOdds()">
+        <span class="spin">&#8635;</span> Refresh from Kalshi
+      </button>
+      <span class="refresh-status" id="refreshStatus">Last updated: loading...</span>
+    </div>
+
+    <!-- Individual Trophy Odds -->
+    <div class="section-title"><span class="accent-dot"></span> Individual Trophy Odds</div>
+    <div class="trophy-grid" id="trophyGrid">
+      <!-- Cards rendered by JS -->
+    </div>
+
+    <!-- Quad Odds -->
+    <div class="quad-section">
+      <div class="section-title"><span class="accent-dot"></span> The Quad</div>
+      <div class="quad-card featured" id="quadCard">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Multiple Trophies -->
+    <div class="multiples-section">
+      <div class="section-title"><span class="accent-dot"></span> Trophy Multiples</div>
+      <div class="multiples-grid" id="multiplesGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Method note -->
+    <div class="method-note">
+      <h3>How these are calculated</h3>
+      <p>
+        Individual trophy probabilities come directly from Kalshi prediction market mid-prices
+        (average of best bid and best ask, in cents). Multi-trophy and Quad probabilities treat
+        each competition as independent and multiply individual probabilities. This is a simplification
+        &mdash; in reality, squad fatigue, fixture congestion, and momentum create correlations.
+        The "at least N trophies" figures use inclusion-exclusion over all
+        <span style="font-family: monospace;">C(4,k)</span> combinations.
+      </p>
+    </div>
+
+    <footer>
+      <p>
+        Data sourced from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets<br>
+        Not financial advice &middot; Odds shift in real time
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE = 'https://api.elections.kalshi.com/trade-api/v2/markets';
+
+    const COMPETITIONS = [
+      {
+        key: 'pl',
+        series: 'KXPREMIERLEAGUE',
+        arsenalTicker: 'KXPREMIERLEAGUE-26-ARS',
+        icon: '\u{1F3C6}',
+        compName: 'Premier League',
+        title: 'League Champions',
+        kalshiUrl: 'https://kalshi.com/markets/kxpremierleague/premier-league/kxpremierleague-26',
+        topN: 3
+      },
+      {
+        key: 'ucl',
+        series: 'KXUCL',
+        arsenalTicker: 'KXUCL-26-ARS',
+        icon: '\u{1F310}',
+        compName: 'UEFA Champions League',
+        title: 'European Champions',
+        kalshiUrl: 'https://kalshi.com/markets/kxucl/uefa-champions-league/kxucl-26',
+        topN: 4
+      },
+      {
+        key: 'fa',
+        series: 'KXFACUP',
+        arsenalTicker: 'KXFACUP-26-ARS',
+        icon: '\u{1F3C5}',
+        compName: 'FA Cup',
+        title: 'FA Cup Winners',
+        kalshiUrl: 'https://kalshi.com/markets/kxfacup/fa-cup/kxfacup-26',
+        topN: 3
+      },
+      {
+        key: 'efl',
+        series: 'KXEFLCUP',
+        arsenalTicker: 'KXEFLCUP-26-ARS',
+        icon: '\u{1F3C8}',
+        compName: 'EFL Cup (Carabao Cup)',
+        title: 'League Cup Winners',
+        kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-26',
+        topN: 2
+      }
+    ];
+
+    // Team name mapping from ticker suffix
+    const TEAM_NAMES = {
+      ARS: 'Arsenal', MCI: 'Man City', MUN: 'Man Utd', LFC: 'Liverpool',
+      CHE: 'Chelsea', AVL: 'Aston Villa', TOT: 'Tottenham', NEW: 'Newcastle',
+      WHU: 'West Ham', BRI: 'Brighton', NFO: "Nott'm Forest", BOU: 'Bournemouth',
+      WOL: 'Wolves', FUL: 'Fulham', BRE: 'Brentford', EVE: 'Everton',
+      CRY: 'Crystal Palace', IPS: 'Ipswich', LEI: 'Leicester', SOU: 'Southampton',
+      LEE: 'Leeds', SUN: 'Sunderland', BAR: 'Barcelona', BMU: 'Bayern Munich',
+      RMA: 'Real Madrid', PSG: 'PSG', ATM: 'Atletico', INT: 'Inter',
+      DOR: 'Dortmund', BEN: 'Benfica', JUV: 'Juventus', NAP: 'Napoli',
+      POR: 'Porto', CEL: 'Celtic', SPO: 'Sporting', MIL: 'AC Milan',
+      CAR: 'Cardiff City', WXH: 'Wrexham', GRI: 'Grimsby', WYC: 'Wycombe',
+      SWA: 'Swansea', LEV: 'Leverkusen', FEY: 'Feyenoord', AJA: 'Ajax',
+      MON: 'Monaco', BRU: 'Club Brugge', SHA: 'Shakhtar', SAL: 'Salzburg',
+      GAL: 'Galatasaray', LIL: 'Lille', PSV: 'PSV', STU: 'Stuttgart',
+      BOD: 'Bodo/Glimt', GIR: 'Girona', SLO: 'Slovan', SPA: 'Sparta Prague',
+      DIN: 'Dinamo Zagreb', YBS: 'Young Boys', STE: 'Steaua', BOL: 'Bologna',
+      VIL: 'Villarreal', QAR: 'Qarabag', AST: 'Aston Villa'
+    };
+
+    // State
+    let currentData = {};
+
+    function getTeamSuffix(ticker) {
+      const parts = ticker.split('-');
+      return parts[parts.length - 1];
+    }
+
+    function getTeamName(ticker) {
+      const suffix = getTeamSuffix(ticker);
+      return TEAM_NAMES[suffix] || suffix;
+    }
+
+    function midPrice(market) {
+      const bid = market.yes_bid || 0;
+      const ask = market.yes_ask || 0;
+      if (bid === 0 && ask === 0) return 0;
+      if (bid === 0) return ask;
+      return (bid + ask) / 2;
+    }
+
+    function probColor(pct) {
+      if (pct >= 50) return 'var(--green)';
+      if (pct >= 15) return 'var(--amber)';
+      return 'var(--arsenal-red)';
+    }
+
+    async function fetchCompetition(comp) {
+      const url = `${API_BASE}?series_ticker=${comp.series}&status=open&limit=100`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${comp.series}`);
+      const data = await resp.json();
+      return data.markets || [];
+    }
+
+    function renderTrophyCard(comp, arsenalMarket, competitors) {
+      const prob = midPrice(arsenalMarket);
+      const pct = prob;
+      const isTop = competitors.length === 0 || prob >= midPrice(competitors[0]);
+      const statusClass = isTop ? 'status-favorite' : 'status-active';
+      const statusText = isTop ? 'Favourite' : 'Contender';
+
+      let compRows = '';
+      for (const c of competitors) {
+        const name = getTeamName(c.ticker);
+        const cPct = midPrice(c);
+        compRows += `
+          <div class="competitor-row">
+            <span class="team-name">${name}</span>
+            <span class="team-odds">${cPct}%</span>
+          </div>`;
+      }
+
+      return `
+        <div class="trophy-card">
+          <span class="status-pill ${statusClass}">${statusText}</span>
+          <div class="icon">${comp.icon}</div>
+          <div class="comp-name">${comp.compName}</div>
+          <div class="trophy-title">${comp.title}</div>
+          <div class="arsenal-odds">
+            <span class="pct" style="color: ${probColor(pct)}">${pct}%</span>
+            <span class="price-tag">$${(prob / 100).toFixed(2)}</span>
+          </div>
+          <div class="prob-bar"><div class="fill" style="width:${pct}%; background: ${probColor(pct)};"></div></div>
+          <div class="competitors">
+            <div class="comp-header">Also in the running</div>
+            ${compRows}
+          </div>
+          <a class="kalshi-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+        </div>`;
+    }
+
+    // Combinatorics for multiples
+    function combinations(arr, k) {
+      if (k === 0) return [[]];
+      if (arr.length === 0) return [];
+      const [first, ...rest] = arr;
+      return [...combinations(rest, k - 1).map(c => [first, ...c]), ...combinations(rest, k)];
+    }
+
+    function probExactly(probs, keys, k) {
+      let total = 0;
+      for (const subset of combinations(keys, k)) {
+        let p = 1;
+        for (const key of keys) {
+          p *= subset.includes(key) ? probs[key] : (1 - probs[key]);
+        }
+        total += p;
+      }
+      return total;
+    }
+
+    function probAtLeast(probs, keys, n) {
+      let total = 0;
+      for (let k = n; k <= keys.length; k++) total += probExactly(probs, keys, k);
+      return total;
+    }
+
+    function renderQuad(probs) {
+      const keys = Object.keys(probs);
+      const quad = keys.reduce((acc, k) => acc * probs[k], 1);
+      const pct = (quad * 100).toFixed(1);
+
+      const labels = { pl: 'PL', ucl: 'UCL', fa: 'FA Cup', efl: 'EFL Cup' };
+      const icons = { pl: '\u{1F3C6}', ucl: '\u{1F310}', fa: '\u{1F3C5}', efl: '\u{1F3C8}' };
+      const trophyTags = keys.map(k =>
+        `<span class="qt">${icons[k]} ${labels[k]} (${(probs[k] * 100).toFixed(0)}%)</span>`
+      ).join('');
+
+      const formula = keys.map(k => probs[k].toFixed(2)).join(' \u00D7 ');
+
+      document.getElementById('quadCard').innerHTML = `
+        <div class="quad-label">Premier League + Champions League + FA Cup + EFL Cup</div>
+        <div class="quad-name">The Quadruple</div>
+        <div class="quad-desc">Win all four major trophies in a single season. No English club has ever achieved this.</div>
+        <div class="quad-trophies">${trophyTags}</div>
+        <div class="quad-odds">
+          <span class="big-number" style="color: var(--arsenal-red);">${pct}%</span>
+          <span class="calc-note">Implied &middot; ${formula}</span>
+        </div>`;
+    }
+
+    function renderMultiples(probs) {
+      const keys = Object.keys(probs);
+      const data = [
+        { count: '1+', label: 'At Least One Trophy', prob: probAtLeast(probs, keys, 1), color: 'var(--green)' },
+        { count: '2+', label: 'At Least Two Trophies', prob: probAtLeast(probs, keys, 2), color: 'var(--amber)' },
+        { count: '3+', label: 'At Least Three Trophies', prob: probAtLeast(probs, keys, 3), color: 'var(--arsenal-red)' }
+      ];
+
+      document.getElementById('multiplesGrid').innerHTML = data.map(d => `
+        <div class="multi-card">
+          <div class="multi-count">${d.count}</div>
+          <div class="multi-label">${d.label}</div>
+          <div class="multi-odds" style="color: ${d.color};">${(d.prob * 100).toFixed(1)}%</div>
+          <div class="multi-note">Inclusion-exclusion across all combinations</div>
+        </div>`
+      ).join('');
+    }
+
+    async function refreshOdds() {
+      const btn = document.getElementById('refreshBtn');
+      const status = document.getElementById('refreshStatus');
+      btn.classList.add('loading');
+      status.className = 'refresh-status';
+      status.textContent = 'Fetching from Kalshi...';
+
+      try {
+        const results = await Promise.all(COMPETITIONS.map(c => fetchCompetition(c)));
+        const probs = {};
+        let gridHtml = '';
+
+        for (let i = 0; i < COMPETITIONS.length; i++) {
+          const comp = COMPETITIONS[i];
+          const markets = results[i];
+
+          // Find Arsenal
+          const arsenalMarket = markets.find(m => m.ticker === comp.arsenalTicker);
+          if (!arsenalMarket) {
+            console.warn(`Arsenal market not found for ${comp.series}`);
+            continue;
+          }
+
+          // Sort all others by mid-price descending, exclude Arsenal
+          const others = markets
+            .filter(m => m.ticker !== comp.arsenalTicker)
+            .map(m => ({ ...m, _mid: midPrice(m) }))
+            .sort((a, b) => b._mid - a._mid)
+            .slice(0, comp.topN);
+
+          const arsenalProb = midPrice(arsenalMarket) / 100;
+          probs[comp.key] = arsenalProb;
+
+          gridHtml += renderTrophyCard(comp, arsenalMarket, others);
+        }
+
+        document.getElementById('trophyGrid').innerHTML = gridHtml;
+        renderQuad(probs);
+        renderMultiples(probs);
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        status.className = 'refresh-status success';
+        status.textContent = `Updated ${timeStr}`;
+      } catch (err) {
+        console.error('Refresh failed:', err);
+        status.className = 'refresh-status error';
+        status.textContent = `Error: ${err.message}`;
+      } finally {
+        btn.classList.remove('loading');
+      }
+    }
+
+    // Auto-load on page open
+    refreshOdds();
+  </script>
+</body>
+</html>
