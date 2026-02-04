@@ -478,10 +478,30 @@
 
     footer a { color: var(--red); text-decoration: none; font-weight: 600; }
 
-    /* Cartoon player illustrations - inline SVG sketches */
-    .player-illustration { pointer-events: none; }
+    /* Background player sketches */
+    .bg-sketches {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-sketches svg {
+      position: absolute;
+      opacity: 0.04;
+    }
+
+    .container { position: relative; z-index: 1; }
 
     /* Responsive */
+    @media (max-width: 1200px) {
+      .bg-sketches { display: none; }
+    }
+
     @media (max-width: 850px) {
       .trophy-grid { grid-template-columns: 1fr 1fr; }
       .sketch-player { display: none; }
@@ -515,6 +535,158 @@
 </head>
 <body>
   <div class="top-accent"></div>
+
+  <!-- Background player sketches scattered across the page -->
+  <div class="bg-sketches">
+
+    <!-- Saka #7 - star boy dribbling (top-left area) -->
+    <svg width="180" height="220" viewBox="0 0 180 220" style="top:5%;left:2%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="90" cy="30" r="14"/>
+        <path d="M82 28 Q86 22 90 28" stroke-width="1.8"/>
+        <path d="M90 28 Q94 22 98 28" stroke-width="1.8"/>
+        <circle cx="85" cy="26" r="1.5" fill="#DB0007"/>
+        <circle cx="95" cy="26" r="1.5" fill="#DB0007"/>
+        <path d="M86 33 Q90 37 94 33" stroke-width="1.8"/>
+        <path d="M90 44 L90 90"/>
+        <path d="M76 58 L90 55 L104 58" stroke-width="1.8" opacity="0.4"/>
+        <text x="84" y="78" font-family="Inter,sans-serif" font-size="12" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">7</text>
+        <path d="M90 55 L68 48 L58 38"/>
+        <path d="M90 55 L110 62 L118 56"/>
+        <path d="M90 90 L72 120 L65 135"/>
+        <path d="M65 135 L58 138" stroke-width="3"/>
+        <path d="M90 90 L108 118 L118 130"/>
+        <path d="M118 130 L124 132" stroke-width="3"/>
+        <circle cx="60" cy="142" r="9"/>
+        <path d="M55 138 L60 142 L65 138" stroke-width="1.2" opacity="0.5"/>
+        <line x1="126" y1="56" x2="134" y2="52" opacity="0.3" stroke-width="1.8"/>
+        <line x1="128" y1="62" x2="138" y2="62" opacity="0.3" stroke-width="1.8"/>
+        <path d="M70 8 L74 14" opacity="0.4" stroke-width="1.5"/>
+        <path d="M110 8 L106 14" opacity="0.4" stroke-width="1.5"/>
+        <path d="M90 2 L90 10" opacity="0.4" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <!-- Saliba #2 - commanding defender (right side, upper) -->
+    <svg width="160" height="200" viewBox="0 0 160 200" style="top:8%;right:3%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="80" cy="28" r="13"/>
+        <path d="M72 18 Q76 10 80 16 Q84 10 88 18" opacity="0.5" stroke-width="1.5"/>
+        <circle cx="75" cy="25" r="1.5" fill="#DB0007"/>
+        <circle cx="85" cy="25" r="1.5" fill="#DB0007"/>
+        <path d="M77 31 L83 31" stroke-width="1.8"/>
+        <path d="M80 41 L80 88"/>
+        <path d="M66 55 L94 55" stroke-width="1.8" opacity="0.4"/>
+        <text x="74" y="76" font-family="Inter,sans-serif" font-size="12" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">2</text>
+        <path d="M80 52 L58 44 L48 48"/>
+        <path d="M80 52 L104 46 L114 50"/>
+        <path d="M80 88 L68 116 L62 130"/>
+        <path d="M62 130 L56 134" stroke-width="3"/>
+        <path d="M80 88 L92 116 L98 130"/>
+        <path d="M98 130 L104 134" stroke-width="3"/>
+        <path d="M40 134 Q80 128 120 134" opacity="0.15" stroke-width="1.8"/>
+      </g>
+    </svg>
+
+    <!-- Rice #41 - midfield engine, passing (left side, middle) -->
+    <svg width="170" height="210" viewBox="0 0 170 210" style="top:35%;left:1%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="85" cy="28" r="13"/>
+        <path d="M78 20 Q82 14 85 20 Q88 14 92 20" opacity="0.5" stroke-width="1.5"/>
+        <circle cx="80" cy="25" r="1.5" fill="#DB0007"/>
+        <circle cx="90" cy="25" r="1.5" fill="#DB0007"/>
+        <path d="M82 32 Q85 35 88 32" stroke-width="1.5"/>
+        <path d="M85 41 L85 88"/>
+        <path d="M72 55 L98 55" stroke-width="1.8" opacity="0.4"/>
+        <text x="76" y="76" font-family="Inter,sans-serif" font-size="11" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">41</text>
+        <path d="M85 52 L62 42 L50 36"/>
+        <path d="M85 52 L108 48 L120 54"/>
+        <path d="M120 54 L130 50"/>
+        <path d="M85 88 L72 116 L66 132"/>
+        <path d="M66 132 L60 136" stroke-width="3"/>
+        <path d="M85 88 L96 118 L100 132"/>
+        <path d="M100 132 L106 135" stroke-width="3"/>
+        <circle cx="134" cy="46" r="8"/>
+        <path d="M130 43 L134 46 L138 43" stroke-width="1" opacity="0.5"/>
+        <line x1="144" y1="42" x2="150" y2="38" opacity="0.3" stroke-width="1.5"/>
+        <line x1="144" y1="46" x2="152" y2="46" opacity="0.3" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <!-- Odegaard #8 - captain, orchestrating (right side, middle) -->
+    <svg width="170" height="210" viewBox="0 0 170 210" style="top:40%;right:2%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="85" cy="28" r="13"/>
+        <path d="M76 18 Q80 12 84 18 Q88 12 92 18" opacity="0.5" stroke-width="1.5"/>
+        <circle cx="80" cy="25" r="1.5" fill="#DB0007"/>
+        <circle cx="90" cy="25" r="1.5" fill="#DB0007"/>
+        <path d="M82 32 Q85 36 88 32" stroke-width="1.5"/>
+        <path d="M85 41 L85 88"/>
+        <path d="M72 55 L98 55" stroke-width="1.8" opacity="0.4"/>
+        <text x="79" y="76" font-family="Inter,sans-serif" font-size="12" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">8</text>
+        <rect x="60" y="49" width="8" height="4" rx="1" stroke-width="1.5" opacity="0.5"/>
+        <path d="M85 52 L65 42 L54 34"/>
+        <path d="M54 34 L48 30"/>
+        <path d="M85 52 L106 46 L116 52"/>
+        <path d="M85 88 L74 116 L68 130"/>
+        <path d="M68 130 L62 134" stroke-width="3"/>
+        <path d="M85 88 L96 116 L102 130"/>
+        <path d="M102 130 L108 134" stroke-width="3"/>
+        <circle cx="44" cy="26" r="8"/>
+        <path d="M40 23 L44 26 L48 23" stroke-width="1" opacity="0.5"/>
+        <line x1="34" y1="22" x2="28" y2="18" opacity="0.3" stroke-width="1.5"/>
+        <line x1="32" y1="26" x2="24" y2="26" opacity="0.3" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <!-- Raya #1 - diving goalkeeper save (bottom-left) -->
+    <svg width="200" height="160" viewBox="0 0 200 160" style="top:68%;left:0%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="70" cy="50" r="13"/>
+        <circle cx="65" cy="47" r="1.5" fill="#DB0007"/>
+        <circle cx="75" cy="47" r="1.5" fill="#DB0007"/>
+        <path d="M67 54 Q70 57 73 54" stroke-width="1.5"/>
+        <path d="M70 63 L90 80" stroke-width="2.2"/>
+        <path d="M80 70 L40 50 L28 40"/>
+        <path d="M28 40 L22 34"/>
+        <circle cx="18" cy="30" r="9"/>
+        <path d="M80 72 L110 62 L122 55"/>
+        <path d="M90 80 L110 100 L120 108"/>
+        <path d="M120 108 L126 110" stroke-width="3"/>
+        <path d="M90 80 L78 100 L72 112"/>
+        <path d="M72 112 L68 116" stroke-width="3"/>
+        <text x="82" y="78" font-family="Inter,sans-serif" font-size="10" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">1</text>
+        <path d="M14 24 L18 28" opacity="0.3" stroke-width="1.5"/>
+        <path d="M10 30 L16 30" opacity="0.3" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+    <!-- Gabriel #6 - heading the ball (bottom-right) -->
+    <svg width="160" height="200" viewBox="0 0 160 200" style="top:72%;right:1%" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#DB0007" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="80" cy="42" r="13"/>
+        <circle cx="75" cy="39" r="1.5" fill="#DB0007"/>
+        <circle cx="85" cy="39" r="1.5" fill="#DB0007"/>
+        <path d="M77 46 Q80 49 83 46" stroke-width="1.5"/>
+        <circle cx="80" cy="18" r="9"/>
+        <path d="M76 15 L80 18 L84 15" stroke-width="1" opacity="0.5"/>
+        <path d="M80 55 L80 100"/>
+        <path d="M66 68 L94 68" stroke-width="1.8" opacity="0.4"/>
+        <text x="74" y="88" font-family="Inter,sans-serif" font-size="12" font-weight="900" fill="#DB0007" stroke="none" opacity="0.35">6</text>
+        <path d="M80 65 L60 58 L50 62"/>
+        <path d="M80 65 L100 58 L110 62"/>
+        <path d="M80 100 L68 128 L62 142"/>
+        <path d="M62 142 L56 146" stroke-width="3"/>
+        <path d="M80 100 L92 128 L98 142"/>
+        <path d="M98 142 L104 146" stroke-width="3"/>
+        <line x1="80" y1="5" x2="80" y2="9" opacity="0.3" stroke-width="1.5"/>
+        <line x1="74" y1="6" x2="76" y2="10" opacity="0.3" stroke-width="1.5"/>
+        <line x1="86" y1="6" x2="84" y2="10" opacity="0.3" stroke-width="1.5"/>
+      </g>
+    </svg>
+
+  </div>
+
   <div class="container">
     <header>
       <div class="header-left">
@@ -749,14 +921,14 @@
       const isTop = !rivals.length || pct >= midPrice(rivals[0]);
       let rows = '';
       for (const r of rivals) {
-        rows += `<div class="rival-row"><span class="name">${getTeamName(r.ticker)}</span><span class="odds">${midPrice(r)}%</span></div>`;
+        rows += `<div class="rival-row"><span class="name">${getTeamName(r.ticker)}</span><span class="odds">${midPrice(r).toFixed(1)}%</span></div>`;
       }
       return `
         <div class="trophy-card">
           <span class="rank-badge ${isTop ? 'rank-top' : 'rank-other'}">${isTop ? '#1' : 'Contender'}</span>
           <div class="comp-label">${comp.compName}</div>
           <div class="comp-title">${comp.title}</div>
-          <span class="odds-value">${pct}%</span><span class="price-note">$${(pct/100).toFixed(2)}</span>
+          <span class="odds-value">${pct.toFixed(1)}%</span><span class="price-note">$${(pct/100).toFixed(2)}</span>
           <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
           <div class="rivals-section">
             <div class="rivals-header">Chasing</div>
@@ -793,7 +965,7 @@
       const keys = Object.keys(probs);
       const quad = keys.reduce((a, k) => a * probs[k], 1);
       const labels = { pl:'PL', ucl:'UCL', fa:'FA Cup', efl:'EFL Cup' };
-      const tags = keys.map(k => `<span class="tag">${labels[k]} ${(probs[k]*100).toFixed(0)}%</span>`).join('');
+      const tags = keys.map(k => `<span class="tag">${labels[k]} ${(probs[k]*100).toFixed(1)}%</span>`).join('');
       const formula = keys.map(k => probs[k].toFixed(2)).join(' \u00D7 ');
       document.getElementById('quadContent').innerHTML = `
         <div class="quad-label">PL + UCL + FA Cup + EFL Cup</div>
