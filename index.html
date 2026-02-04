@@ -903,10 +903,10 @@
 
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    async function fetchCompetition(comp, retries = 3) {
+    async function fetchCompetition(comp, retries = 4) {
       const url = `${API_BASE}?series_ticker=${comp.series}&status=open&limit=100`;
       for (let i = 0; i < retries; i++) {
-        if (i > 0) await delay(1500 * i);
+        if (i > 0) await delay(2000 * (i + 1));
         const r = await fetch(url);
         if (r.status === 429) { console.warn(`429 for ${comp.series}, retry ${i+1}`); continue; }
         if (!r.ok) throw new Error(`HTTP ${r.status} for ${comp.series}`);
@@ -1003,7 +1003,7 @@
         const probs = {};
         let html = '';
         for (let i = 0; i < COMPETITIONS.length; i++) {
-          if (i > 0) await delay(500);
+          if (i > 0) await delay(1000);
           const comp = COMPETITIONS[i];
           status.textContent = `${comp.compName}...`;
           const markets = await fetchCompetition(comp);

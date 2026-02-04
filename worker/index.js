@@ -3,6 +3,7 @@ const ALLOWED_ORIGINS = [
   'https://jmorcos3.github.io',
   'https://arsenal-quad.netlify.app',
 ];
+const CACHE_TTL = 120; // cache responses for 2 minutes
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -36,6 +37,25 @@ export default {
       return new Response('Not found', { status: 404, headers: corsHeaders(origin) });
     }
 
+    // Check Cloudflare cache first (origin-independent cache key)
+    const cacheKey = new Request(`https://cache.internal${path}${url.search}`, { method: 'GET' });
+    const cache = caches.default;
+    let cached = await cache.match(cacheKey);
+
+    if (cached) {
+      // Serve from cache but fix CORS header for this origin
+      const body = await cached.text();
+      return new Response(body, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': `public, max-age=${CACHE_TTL}`,
+          'X-Cache': 'HIT',
+          ...corsHeaders(origin),
+        },
+      });
+    }
+
     // Forward to Kalshi API
     const kalshiUrl = `${KALSHI_API}${path}${url.search}`;
 
@@ -46,11 +66,24 @@ export default {
 
       const body = await resp.text();
 
+      // Only cache successful responses
+      if (resp.ok) {
+        const cacheResp = new Response(body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': `public, max-age=${CACHE_TTL}`,
+          },
+        });
+        await cache.put(cacheKey, cacheResp);
+      }
+
       return new Response(body, {
         status: resp.status,
         headers: {
           'Content-Type': 'application/json',
-          'Cache-Control': 'public, max-age=60',
+          'Cache-Control': `public, max-age=${CACHE_TTL}`,
+          'X-Cache': 'MISS',
           ...corsHeaders(origin),
         },
       });
