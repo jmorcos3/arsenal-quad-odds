@@ -4,222 +4,174 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#0b0c10">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#ffffff">
   <meta name="description" content="Live Arsenal quadruple odds from Kalshi prediction markets. Track Premier League, Champions League, FA Cup & EFL Cup probabilities in real time.">
-
-  <!-- Open Graph / Link Preview -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Arsenal Quad Tracker">
   <meta property="og:description" content="Can Arsenal win all four? Live odds from Kalshi for the Premier League, Champions League, FA Cup & Carabao Cup.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <meta property="og:url" content="https://jmorcos3.github.io/arsenal-quad-odds/">
-
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Arsenal Quad Tracker">
   <meta name="twitter:description" content="Can Arsenal win all four? Live odds from Kalshi.">
   <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
-
-  <title>Arsenal Quad Odds Tracker</title>
+  <title>Arsenal Quad Tracker</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --arsenal-red: #EF0107;
-      --arsenal-red-dark: #9b0004;
-      --arsenal-navy: #063672;
-      --arsenal-gold: #EDBB00;
-      --bg-dark: #0b0c10;
-      --bg-card: #14171f;
-      --bg-card-alt: #191d28;
-      --text-primary: #f1f5f9;
-      --text-secondary: #7a8599;
-      --border-color: #222838;
-      --green: #22c55e;
-      --amber: #f59e0b;
+      --red: #DB0007;
+      --red-dark: #b30006;
+      --red-light: #ff2a2a;
+      --white: #ffffff;
+      --bg: #ffffff;
+      --card-bg: #ffffff;
+      --text: #1a1a1a;
+      --text-mid: #666;
+      --text-light: #999;
+      --border: #e8e8e8;
+      --border-strong: #DB0007;
+      --green: #16a34a;
+      --amber: #d97706;
+      --red-tint: #fff5f5;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Arsenal-themed top stripe */
-    .top-stripe {
-      height: 4px;
-      background: linear-gradient(90deg, var(--arsenal-red) 0%, var(--arsenal-red) 40%, var(--arsenal-gold) 50%, var(--arsenal-navy) 60%, var(--arsenal-navy) 100%);
-    }
-
-    /* Background with cannon watermark feel */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background:
-        radial-gradient(ellipse at 15% -10%, rgba(239,1,7,0.12) 0%, transparent 45%),
-        radial-gradient(ellipse at 85% 110%, rgba(6,54,114,0.12) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(239,1,7,0.02) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
+    /* Clean red accent line */
+    .top-accent {
+      height: 3px;
+      background: var(--red);
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 920px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-      position: relative;
-      z-index: 1;
+      padding: 2.5rem 2rem;
+      padding-left: max(2rem, env(safe-area-inset-left));
+      padding-right: max(2rem, env(safe-area-inset-right));
+      padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 
     /* Header */
     header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .crest-area {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-bottom: 0.75rem;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      gap: 1.5rem;
     }
 
-    .crest-area .cannon {
-      font-size: 2rem;
-      filter: drop-shadow(0 0 8px rgba(239,1,7,0.4));
-    }
+    .header-left { flex: 1; }
 
-    header .badge {
+    .season-badge {
       display: inline-block;
-      background: var(--arsenal-red);
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 700;
+      border: 2px solid var(--red);
+      color: var(--red);
+      font-size: 0.6rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      padding: 0.3rem 0.9rem;
-      border-radius: 999px;
+      padding: 0.25rem 0.75rem;
+      border-radius: 3px;
+      margin-bottom: 0.6rem;
     }
 
     header h1 {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 0.4rem;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      color: var(--text);
     }
 
-    header h1 .highlight {
-      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    header h1 .accent { color: var(--red); }
+
+    .header-sub {
+      color: var(--text-light);
+      font-size: 0.78rem;
+      margin-top: 0.4rem;
+      font-weight: 400;
     }
 
-    header .subtitle {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
+    .header-sub a { color: var(--red); text-decoration: none; font-weight: 600; }
+
+    /* Sketch illustrations */
+    .sketch-player {
+      flex-shrink: 0;
     }
 
-    header .subtitle a {
-      color: var(--arsenal-gold);
-      text-decoration: none;
-    }
-
-    /* Refresh bar */
-    .refresh-bar {
+    /* Refresh */
+    .refresh-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .refresh-btn {
+    .btn-refresh {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-red-dark));
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 0.55rem 1.2rem;
+      gap: 0.4rem;
+      background: var(--white);
+      color: var(--red);
+      border: 2px solid var(--red);
+      border-radius: 4px;
+      padding: 0.45rem 1rem;
       font-family: inherit;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      letter-spacing: 0.02em;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .refresh-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(239,1,7,0.35);
-    }
+    .btn-refresh:hover { background: var(--red); color: #fff; }
+    .btn-refresh.loading { opacity: 0.5; pointer-events: none; }
+    .btn-refresh .icon { display: inline-block; font-size: 0.85rem; }
+    .btn-refresh.loading .icon { animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .refresh-btn:active { transform: translateY(0); }
+    .status-text { font-size: 0.68rem; color: var(--text-light); font-weight: 500; }
+    .status-text.ok { color: var(--green); }
+    .status-text.err { color: var(--red); }
 
-    .refresh-btn.loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .refresh-btn .spin {
-      display: inline-block;
-      transition: transform 0.3s;
-    }
-
-    .refresh-btn.loading .spin {
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .refresh-status {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-    }
-
-    .refresh-status.success { color: var(--green); }
-    .refresh-status.error { color: var(--arsenal-red); }
-
-    /* Section title */
+    /* Section headers */
     .section-title {
-      font-size: 0.85rem;
+      font-size: 0.62rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--arsenal-red);
+      letter-spacing: 0.14em;
+      color: var(--red);
+      margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .section-title .accent-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--arsenal-red);
-      border-radius: 50%;
-      display: inline-block;
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
 
-    /* Trophy cards grid */
+    /* Trophy grid */
     .trophy-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -228,242 +180,222 @@
     }
 
     .trophy-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 1.25rem;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem;
       position: relative;
-      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-
-    .trophy-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--arsenal-red), var(--arsenal-gold));
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .trophy-card:hover::before { opacity: 1; }
 
     .trophy-card:hover {
-      border-color: rgba(239,1,7,0.35);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border-color: var(--red);
+      box-shadow: 0 0 0 1px var(--red);
     }
 
-    .trophy-card .icon {
-      font-size: 1.8rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .trophy-card .comp-name {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
+    .trophy-card .comp-label {
+      font-size: 0.55rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.2rem;
+      letter-spacing: 0.1em;
+      color: var(--text-light);
+      margin-bottom: 0.1rem;
     }
 
-    .trophy-card .trophy-title {
-      font-size: 1rem;
+    .trophy-card .comp-title {
+      font-size: 0.85rem;
       font-weight: 800;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
+      color: var(--text);
     }
 
-    .trophy-card .arsenal-odds {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .trophy-card .arsenal-odds .pct {
-      font-size: 2rem;
+    .trophy-card .odds-value {
+      font-size: 2.1rem;
       font-weight: 900;
       line-height: 1;
+      color: var(--red);
     }
 
-    .trophy-card .arsenal-odds .price-tag {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+    .trophy-card .price-note {
+      font-size: 0.65rem;
+      color: var(--text-light);
+      margin-left: 0.25rem;
+      font-weight: 500;
     }
 
-    .trophy-card .prob-bar {
+    .trophy-card .bar-track {
       width: 100%;
-      height: 5px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 3px;
-      margin: 0.6rem 0;
+      height: 3px;
+      background: #f2f2f2;
+      border-radius: 2px;
+      margin: 0.65rem 0;
       overflow: hidden;
     }
 
-    .trophy-card .prob-bar .fill {
+    .trophy-card .bar-fill {
       height: 100%;
-      border-radius: 3px;
-      transition: width 0.6s ease;
+      border-radius: 2px;
+      background: var(--red);
+      transition: width 0.5s ease;
     }
 
-    .trophy-card .status-pill {
+    .trophy-card .rank-badge {
       position: absolute;
       top: 0.75rem;
       right: 0.75rem;
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
+      font-size: 0.5rem;
+      font-weight: 800;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
-    .status-active {
-      background: rgba(34,197,94,0.15);
-      color: var(--green);
+    .rank-top {
+      background: var(--red);
+      color: #fff;
     }
 
-    .status-favorite {
-      background: rgba(239,1,7,0.15);
-      color: var(--arsenal-red);
+    .rank-other {
+      border: 1px solid var(--border);
+      color: var(--text-light);
+      background: var(--white);
     }
 
-    /* Competitor list inside trophy card */
-    .competitors {
-      margin-top: 0.75rem;
-      border-top: 1px solid var(--border-color);
-      padding-top: 0.6rem;
+    /* Competitors */
+    .rivals-section {
+      margin-top: 0.65rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.5rem;
     }
 
-    .competitors .comp-header {
-      font-size: 0.6rem;
+    .rivals-header {
+      font-size: 0.5rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--text-secondary);
-      margin-bottom: 0.4rem;
+      color: var(--text-light);
+      margin-bottom: 0.25rem;
     }
 
-    .competitor-row {
+    .rival-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 0.2rem 0;
+      padding: 0.12rem 0;
     }
 
-    .competitor-row .team-name {
-      font-size: 0.72rem;
-      color: var(--text-secondary);
-    }
-
-    .competitor-row .team-odds {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-secondary);
-    }
-
-    .trophy-card .kalshi-link {
-      display: inline-block;
-      margin-top: 0.6rem;
+    .rival-row .name {
       font-size: 0.65rem;
-      color: var(--text-secondary);
+      color: var(--text-mid);
+    }
+
+    .rival-row .odds {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-mid);
+    }
+
+    .trophy-card .market-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.58rem;
+      font-weight: 600;
+      color: var(--text-light);
       text-decoration: none;
-      opacity: 0.6;
-      transition: opacity 0.2s, color 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 0.15s;
     }
 
-    .trophy-card .kalshi-link:hover {
-      opacity: 1;
-      color: var(--arsenal-gold);
-    }
+    .trophy-card .market-link:hover { color: var(--red); }
 
-    /* Quad odds section */
-    .quad-section {
-      margin-bottom: 2.5rem;
-    }
+    /* Quad card */
+    .quad-section { margin-bottom: 2.5rem; }
 
     .quad-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
+      background: var(--white);
+      border: 2px solid var(--red);
+      border-radius: 6px;
       padding: 1.75rem;
       position: relative;
       overflow: hidden;
     }
 
-    .quad-card.featured {
-      border-color: rgba(239,1,7,0.25);
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(239,1,7,0.04) 50%, rgba(6,54,114,0.04) 100%);
+    .quad-card .quad-layout {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
     }
 
-    .quad-card.featured::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--arsenal-red), var(--arsenal-gold), var(--arsenal-navy));
-    }
+    .quad-card .quad-body { flex: 1; }
 
     .quad-card .quad-label {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
+      font-size: 0.55rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.2rem;
+      letter-spacing: 0.12em;
+      color: var(--text-light);
+      margin-bottom: 0.15rem;
     }
 
-    .quad-card .quad-name {
-      font-size: 1.3rem;
+    .quad-card .quad-heading {
+      font-size: 1.4rem;
       font-weight: 900;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.02em;
     }
 
     .quad-card .quad-desc {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 1rem;
-      max-width: 600px;
+      font-size: 0.72rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+      margin-bottom: 0.9rem;
     }
 
-    .quad-card .quad-trophies {
+    .trophy-tags {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
 
-    .quad-card .quad-trophies .qt {
-      background: rgba(239,1,7,0.08);
-      border: 1px solid rgba(239,1,7,0.2);
-      border-radius: 6px;
-      padding: 0.3rem 0.6rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-primary);
+    .trophy-tags .tag {
+      border: 1.5px solid var(--red);
+      border-radius: 3px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--red);
+      background: var(--red-tint);
     }
 
-    .quad-card .quad-odds {
+    .quad-result {
       display: flex;
       align-items: baseline;
-      gap: 0.75rem;
+      gap: 0.6rem;
     }
 
-    .quad-card .quad-odds .big-number {
-      font-size: 2.5rem;
+    .quad-result .big-pct {
+      font-size: 2.8rem;
       font-weight: 900;
+      color: var(--red);
+      letter-spacing: -0.02em;
     }
 
-    .quad-card .quad-odds .calc-note {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
+    .quad-result .formula {
+      font-size: 0.62rem;
+      color: var(--text-light);
+      font-weight: 500;
     }
 
-    /* Multiple trophies section */
-    .multiples-section {
-      margin-bottom: 2.5rem;
+    /* Sketch decoration in quad */
+    .quad-sketch-wrap {
+      flex-shrink: 0;
+      opacity: 0.08;
     }
+
+    /* Multiples */
+    .multiples-section { margin-bottom: 2.5rem; }
 
     .multiples-grid {
       display: grid;
@@ -472,197 +404,255 @@
     }
 
     .multi-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 1.5rem;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      padding: 1.3rem;
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      transition: border-color 0.15s;
     }
 
-    .multi-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--arsenal-red);
-      opacity: 0.3;
-    }
+    .multi-card:hover { border-color: var(--red); }
 
-    .multi-card .multi-count {
-      font-size: 2.2rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--arsenal-red), var(--arsenal-gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.2rem;
-    }
-
-    .multi-card .multi-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 0.75rem;
-    }
-
-    .multi-card .multi-odds {
+    .multi-card .multi-n {
       font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--red);
+      margin-bottom: 0.1rem;
+    }
+
+    .multi-card .multi-desc {
+      font-size: 0.68rem;
+      color: var(--text-mid);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .multi-card .multi-pct {
+      font-size: 1.5rem;
       font-weight: 800;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.1rem;
     }
 
-    .multi-card .multi-note {
-      font-size: 0.65rem;
-      color: var(--text-secondary);
+    .multi-card .multi-sub {
+      font-size: 0.55rem;
+      color: var(--text-light);
+      font-weight: 500;
     }
 
-    /* Method note */
-    .method-note {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
+    /* Method */
+    .method-box {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.1rem 1.4rem;
       margin-bottom: 2rem;
     }
 
-    .method-note h3 {
-      font-size: 0.8rem;
+    .method-box h3 {
+      font-size: 0.65rem;
       font-weight: 800;
-      margin-bottom: 0.4rem;
-      color: var(--arsenal-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+      color: var(--text);
     }
 
-    .method-note p {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
+    .method-box p {
+      font-size: 0.66rem;
+      color: var(--text-mid);
+      line-height: 1.65;
     }
 
     /* Footer */
     footer {
       text-align: center;
-      padding: 2rem 0 1rem;
-      border-top: 2px solid var(--arsenal-red);
+      padding: 1.5rem 0 0.5rem;
+      border-top: 2px solid var(--red);
     }
 
     footer p {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      line-height: 1.8;
+      font-size: 0.62rem;
+      color: var(--text-light);
+      line-height: 1.9;
     }
 
-    footer a {
-      color: var(--arsenal-gold);
-      text-decoration: none;
-    }
+    footer a { color: var(--red); text-decoration: none; font-weight: 600; }
 
-    /* Safe area for iPhone notch */
-    .container {
-      padding-left: max(1.5rem, env(safe-area-inset-left));
-      padding-right: max(1.5rem, env(safe-area-inset-right));
-      padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    }
+    /* Cartoon player illustrations - inline SVG sketches */
+    .player-illustration { pointer-events: none; }
 
     /* Responsive */
     @media (max-width: 850px) {
       .trophy-grid { grid-template-columns: 1fr 1fr; }
+      .sketch-player { display: none; }
     }
 
     @media (max-width: 500px) {
-      .container { padding: 1.25rem 1rem; }
-      header h1 { font-size: 1.7rem; }
-      .trophy-grid { grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+      .container { padding: 1.5rem 1rem; }
+      header { flex-direction: column; text-align: center; }
+      header h1 { font-size: 1.6rem; }
+      .trophy-grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
       .trophy-card { padding: 1rem; }
-      .trophy-card .icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
-      .trophy-card .comp-name { font-size: 0.6rem; }
-      .trophy-card .trophy-title { font-size: 0.85rem; margin-bottom: 0.5rem; }
-      .trophy-card .arsenal-odds .pct { font-size: 1.5rem; }
-      .trophy-card .arsenal-odds .price-tag { font-size: 0.65rem; }
-      .trophy-card .status-pill { font-size: 0.5rem; padding: 0.15rem 0.4rem; }
-      .competitors .comp-header { font-size: 0.55rem; }
-      .competitor-row .team-name,
-      .competitor-row .team-odds { font-size: 0.65rem; }
-      .trophy-card .kalshi-link { font-size: 0.6rem; }
-      .multiples-grid { grid-template-columns: 1fr 1fr 1fr; gap: 0.65rem; }
-      .multi-card { padding: 1rem 0.5rem; }
-      .multi-card .multi-count { font-size: 1.6rem; }
-      .multi-card .multi-label { font-size: 0.65rem; }
-      .multi-card .multi-odds { font-size: 1.2rem; }
-      .multi-card .multi-note { font-size: 0.55rem; }
-      .quad-card { padding: 1.25rem; }
-      .quad-card .quad-name { font-size: 1.1rem; }
-      .quad-card .quad-desc { font-size: 0.75rem; }
-      .quad-card .quad-odds .big-number { font-size: 2rem; }
-      .quad-card .quad-trophies .qt { font-size: 0.6rem; padding: 0.25rem 0.5rem; }
-      .refresh-btn { font-size: 0.75rem; padding: 0.5rem 1rem; }
-      .method-note p { font-size: 0.7rem; }
+      .trophy-card .comp-title { font-size: 0.78rem; }
+      .trophy-card .odds-value { font-size: 1.6rem; }
+      .trophy-card .rank-badge { font-size: 0.45rem; padding: 0.1rem 0.35rem; }
+      .rival-row .name, .rival-row .odds { font-size: 0.58rem; }
+      .multiples-grid { gap: 0.7rem; }
+      .multi-card { padding: 1rem 0.6rem; }
+      .multi-card .multi-n { font-size: 1.3rem; }
+      .multi-card .multi-desc { font-size: 0.6rem; }
+      .multi-card .multi-pct { font-size: 1.15rem; }
+      .quad-card { padding: 1.2rem; }
+      .quad-card .quad-heading { font-size: 1.15rem; }
+      .quad-result .big-pct { font-size: 2.1rem; }
+      .quad-sketch-wrap { display: none; }
     }
 
     @media (max-width: 360px) {
       .trophy-grid { grid-template-columns: 1fr; }
-      header h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <div class="top-stripe"></div>
+  <div class="top-accent"></div>
   <div class="container">
     <header>
-      <div class="crest-area">
-        <span class="badge">2025-26 Season</span>
+      <div class="header-left">
+        <div class="season-badge">2025-26 Season</div>
+        <h1>Arsenal <span class="accent">Quad Tracker</span></h1>
+        <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
       </div>
-      <h1>Arsenal <span class="highlight">Quad Tracker</span></h1>
-      <p class="subtitle">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets</p>
+      <!-- Cartoon sketch: player dribbling -->
+      <svg class="sketch-player" width="130" height="140" viewBox="0 0 130 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#DB0007" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <!-- hair spikes -->
+          <path d="M54 12 Q56 6 60 10" opacity="0.6"/>
+          <path d="M60 10 Q63 4 66 10" opacity="0.6"/>
+          <path d="M66 10 Q70 6 68 14" opacity="0.6"/>
+          <!-- head -->
+          <circle cx="62" cy="22" r="10"/>
+          <!-- smile -->
+          <path d="M58 24 Q62 28 66 24" stroke-width="1.5"/>
+          <!-- eyes -->
+          <circle cx="58" cy="20" r="1.2" fill="#DB0007"/>
+          <circle cx="66" cy="20" r="1.2" fill="#DB0007"/>
+          <!-- jersey body (v-shape collar) -->
+          <path d="M62 32 L62 65"/>
+          <path d="M52 40 L72 40" stroke-width="1.5"/>
+          <path d="M59 32 L62 36 L65 32" stroke-width="1.2" opacity="0.5"/>
+          <!-- jersey number 14 -->
+          <text x="57" y="55" font-family="Inter,sans-serif" font-size="8" font-weight="900" fill="#DB0007" stroke="none" opacity="0.4">14</text>
+          <!-- left arm (pointing) -->
+          <path d="M62 40 L44 34 L36 28"/>
+          <circle cx="36" cy="28" r="2" opacity="0.4"/>
+          <!-- right arm -->
+          <path d="M62 40 L78 46 L82 42"/>
+          <!-- left leg (stride) -->
+          <path d="M62 65 L48 88 L42 96"/>
+          <path d="M42 96 L36 98" stroke-width="2.5"/>
+          <!-- right leg (back) -->
+          <path d="M62 65 L74 84 L82 90"/>
+          <path d="M82 90 L86 91" stroke-width="2.5"/>
+          <!-- ball at feet -->
+          <circle cx="38" cy="102" r="7"/>
+          <path d="M34 99 L38 102 L42 99" stroke-width="1" opacity="0.5"/>
+          <path d="M35 105 L38 102 L41 105" stroke-width="1" opacity="0.5"/>
+          <!-- motion lines -->
+          <line x1="90" y1="42" x2="96" y2="40" opacity="0.25" stroke-width="1.5"/>
+          <line x1="90" y1="48" x2="98" y2="48" opacity="0.25" stroke-width="1.5"/>
+          <line x1="88" y1="54" x2="96" y2="56" opacity="0.25" stroke-width="1.5"/>
+          <!-- ground line -->
+          <path d="M28 110 Q60 106 100 110" opacity="0.15" stroke-width="1.5"/>
+        </g>
+      </svg>
     </header>
 
-    <!-- Refresh -->
-    <div class="refresh-bar">
-      <button class="refresh-btn" id="refreshBtn" onclick="refreshOdds()">
-        <span class="spin">&#8635;</span> Refresh from Kalshi
+    <!-- Refresh bar -->
+    <div class="refresh-row">
+      <button class="btn-refresh" id="refreshBtn" onclick="refreshOdds()">
+        <span class="icon">&#8635;</span> Refresh
       </button>
-      <span class="refresh-status" id="refreshStatus">Last updated: loading...</span>
+      <span class="status-text" id="refreshStatus">Loading...</span>
     </div>
 
-    <!-- Individual Trophy Odds -->
-    <div class="section-title"><span class="accent-dot"></span> Individual Trophy Odds</div>
-    <div class="trophy-grid" id="trophyGrid">
-      <!-- Cards rendered by JS -->
-    </div>
+    <!-- Trophy Odds -->
+    <div class="section-title">Individual Trophy Odds</div>
+    <div class="trophy-grid" id="trophyGrid"></div>
 
-    <!-- Quad Odds -->
+    <!-- Quad -->
     <div class="quad-section">
-      <div class="section-title"><span class="accent-dot"></span> The Quad</div>
-      <div class="quad-card featured" id="quadCard">
-        <!-- Rendered by JS -->
+      <div class="section-title">The Quadruple</div>
+      <div class="quad-card" id="quadCard">
+        <div class="quad-layout">
+          <div class="quad-body" id="quadContent"></div>
+          <!-- Cartoon sketch: celebrating player with trophy -->
+          <svg class="quad-sketch-wrap" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="#DB0007" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <!-- confetti -->
+              <rect x="15" y="10" width="4" height="4" rx="1" transform="rotate(15 15 10)" opacity="0.4"/>
+              <rect x="85" y="8" width="4" height="4" rx="1" transform="rotate(-20 85 8)" opacity="0.4"/>
+              <rect x="25" y="4" width="3" height="3" rx="0.5" transform="rotate(30 25 4)" opacity="0.3"/>
+              <rect x="75" y="2" width="3" height="3" rx="0.5" transform="rotate(-10 75 2)" opacity="0.3"/>
+              <!-- trophy above head -->
+              <path d="M42 18 L42 12 Q42 6 50 6 L60 6 Q68 6 68 12 L68 18" stroke-width="2"/>
+              <line x1="55" y1="18" x2="55" y2="24" stroke-width="2"/>
+              <rect x="48" y="24" width="14" height="4" rx="1" stroke-width="1.5"/>
+              <!-- trophy handles -->
+              <path d="M42 12 Q36 12 36 16 Q36 18 42 18" stroke-width="1.5"/>
+              <path d="M68 12 Q74 12 74 16 Q74 18 68 18" stroke-width="1.5"/>
+              <!-- head -->
+              <circle cx="55" cy="38" r="9"/>
+              <!-- big grin -->
+              <path d="M49 40 Q55 47 61 40" stroke-width="1.8"/>
+              <!-- eyes (happy) -->
+              <path d="M50 36 Q52 34 54 36" stroke-width="1.5"/>
+              <path d="M56 36 Q58 34 60 36" stroke-width="1.5"/>
+              <!-- body -->
+              <line x1="55" y1="47" x2="55" y2="75"/>
+              <!-- arms up -->
+              <path d="M55 54 L38 38"/>
+              <path d="M55 54 L72 38"/>
+              <!-- jersey -->
+              <path d="M48 54 L62 54" stroke-width="1.2" opacity="0.4"/>
+              <!-- legs wide -->
+              <path d="M55 75 L42 98 L38 104"/>
+              <path d="M38 104 L34 106" stroke-width="2.5"/>
+              <path d="M55 75 L68 98 L72 104"/>
+              <path d="M72 104 L76 106" stroke-width="2.5"/>
+              <!-- ground -->
+              <path d="M25 110 Q55 106 85 110" opacity="0.15" stroke-width="1.5"/>
+              <!-- star bursts -->
+              <line x1="20" y1="30" x2="16" y2="26" opacity="0.3"/>
+              <line x1="18" y1="34" x2="12" y2="34" opacity="0.3"/>
+              <line x1="90" y1="30" x2="94" y2="26" opacity="0.3"/>
+              <line x1="92" y1="34" x2="98" y2="34" opacity="0.3"/>
+            </g>
+          </svg>
+        </div>
       </div>
     </div>
 
-    <!-- Multiple Trophies -->
+    <!-- Multiples -->
     <div class="multiples-section">
-      <div class="section-title"><span class="accent-dot"></span> Trophy Multiples</div>
-      <div class="multiples-grid" id="multiplesGrid">
-        <!-- Rendered by JS -->
-      </div>
+      <div class="section-title">Trophy Multiples</div>
+      <div class="multiples-grid" id="multiplesGrid"></div>
     </div>
 
-    <!-- Method note -->
-    <div class="method-note">
+    <!-- Method -->
+    <div class="method-box">
       <h3>How these are calculated</h3>
       <p>
-        Individual trophy probabilities come directly from Kalshi prediction market mid-prices
-        (average of best bid and best ask, in cents). Multi-trophy and Quad probabilities treat
-        each competition as independent and multiply individual probabilities. This is a simplification
-        &mdash; in reality, squad fatigue, fixture congestion, and momentum create correlations.
-        The "at least N trophies" figures use inclusion-exclusion over all
-        <span style="font-family: monospace;">C(4,k)</span> combinations.
+        Individual probabilities come from Kalshi market mid-prices (avg of best bid and ask, in cents).
+        Multi-trophy odds treat each competition as independent. The "at least N" figures use
+        inclusion-exclusion over all C(4,k) combinations. This is a simplification &mdash; fatigue and
+        fixture congestion create real correlations.
       </p>
     </div>
 
     <footer>
       <p>
-        Data sourced from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets<br>
-        Not financial advice &middot; Odds shift in real time
+        Data from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets<br>
+        Not financial advice
       </p>
     </footer>
   </div>
@@ -675,7 +665,6 @@
         key: 'pl',
         series: 'KXPREMIERLEAGUE',
         arsenalTicker: 'KXPREMIERLEAGUE-26-ARS',
-        icon: '\u{1F3C6}',
         compName: 'Premier League',
         title: 'League Champions',
         kalshiUrl: 'https://kalshi.com/markets/kxpremierleague/premier-league/kxpremierleague-26',
@@ -685,8 +674,7 @@
         key: 'ucl',
         series: 'KXUCL',
         arsenalTicker: 'KXUCL-26-ARS',
-        icon: '\u{1F310}',
-        compName: 'UEFA Champions League',
+        compName: 'Champions League',
         title: 'European Champions',
         kalshiUrl: 'https://kalshi.com/markets/kxucl/uefa-champions-league/kxucl-26',
         topN: 4
@@ -695,7 +683,6 @@
         key: 'fa',
         series: 'KXFACUP',
         arsenalTicker: 'KXFACUP-26-ARS',
-        icon: '\u{1F3C5}',
         compName: 'FA Cup',
         title: 'FA Cup Winners',
         kalshiUrl: 'https://kalshi.com/markets/kxfacup/fa-cup/kxfacup-26',
@@ -705,15 +692,13 @@
         key: 'efl',
         series: 'KXEFLCUP',
         arsenalTicker: 'KXEFLCUP-26-ARS',
-        icon: '\u{1F3C8}',
-        compName: 'EFL Cup (Carabao Cup)',
-        title: 'League Cup Winners',
+        compName: 'EFL Cup',
+        title: 'Carabao Cup Winners',
         kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-26',
         topN: 2
       }
     ];
 
-    // Team name mapping from ticker suffix
     const TEAM_NAMES = {
       ARS: 'Arsenal', MCI: 'Man City', MUN: 'Man Utd', LFC: 'Liverpool',
       CHE: 'Chelsea', AVL: 'Aston Villa', TOT: 'Tottenham', NEW: 'Newcastle',
@@ -733,213 +718,144 @@
       VIL: 'Villarreal', QAR: 'Qarabag', AST: 'Aston Villa'
     };
 
-    // State
-    let currentData = {};
-
-    function getTeamSuffix(ticker) {
-      const parts = ticker.split('-');
-      return parts[parts.length - 1];
-    }
-
     function getTeamName(ticker) {
-      const suffix = getTeamSuffix(ticker);
-      return TEAM_NAMES[suffix] || suffix;
+      return TEAM_NAMES[ticker.split('-').pop()] || ticker.split('-').pop();
     }
 
-    function midPrice(market) {
-      const bid = market.yes_bid || 0;
-      const ask = market.yes_ask || 0;
-      if (bid === 0 && ask === 0) return 0;
-      if (bid === 0) return ask;
-      return (bid + ask) / 2;
-    }
-
-    function probColor(pct) {
-      if (pct >= 50) return 'var(--green)';
-      if (pct >= 15) return 'var(--amber)';
-      return 'var(--arsenal-red)';
+    function midPrice(m) {
+      const b = m.yes_bid || 0, a = m.yes_ask || 0;
+      if (!b && !a) return 0;
+      if (!b) return a;
+      return (b + a) / 2;
     }
 
     function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
     async function fetchCompetition(comp, retries = 3) {
       const url = `${API_BASE}?series_ticker=${comp.series}&status=open&limit=100`;
-      for (let attempt = 0; attempt < retries; attempt++) {
-        if (attempt > 0) await delay(1500 * attempt);
-        const resp = await fetch(url);
-        if (resp.status === 429) {
-          console.warn(`Rate limited for ${comp.series}, retry ${attempt + 1}...`);
-          continue;
-        }
-        if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${comp.series}`);
-        const data = await resp.json();
-        return data.markets || [];
+      for (let i = 0; i < retries; i++) {
+        if (i > 0) await delay(1500 * i);
+        const r = await fetch(url);
+        if (r.status === 429) { console.warn(`429 for ${comp.series}, retry ${i+1}`); continue; }
+        if (!r.ok) throw new Error(`HTTP ${r.status} for ${comp.series}`);
+        const d = await r.json();
+        return d.markets || [];
       }
-      throw new Error(`Rate limited for ${comp.series} after ${retries} retries`);
+      throw new Error(`Rate limited: ${comp.series}`);
     }
 
-    function renderTrophyCard(comp, arsenalMarket, competitors) {
-      const prob = midPrice(arsenalMarket);
-      const pct = prob;
-      const isTop = competitors.length === 0 || prob >= midPrice(competitors[0]);
-      const statusClass = isTop ? 'status-favorite' : 'status-active';
-      const statusText = isTop ? 'Favourite' : 'Contender';
-
-      let compRows = '';
-      for (const c of competitors) {
-        const name = getTeamName(c.ticker);
-        const cPct = midPrice(c);
-        compRows += `
-          <div class="competitor-row">
-            <span class="team-name">${name}</span>
-            <span class="team-odds">${cPct}%</span>
-          </div>`;
+    function renderCard(comp, ars, rivals) {
+      const pct = midPrice(ars);
+      const isTop = !rivals.length || pct >= midPrice(rivals[0]);
+      let rows = '';
+      for (const r of rivals) {
+        rows += `<div class="rival-row"><span class="name">${getTeamName(r.ticker)}</span><span class="odds">${midPrice(r)}%</span></div>`;
       }
-
       return `
         <div class="trophy-card">
-          <span class="status-pill ${statusClass}">${statusText}</span>
-          <div class="icon">${comp.icon}</div>
-          <div class="comp-name">${comp.compName}</div>
-          <div class="trophy-title">${comp.title}</div>
-          <div class="arsenal-odds">
-            <span class="pct" style="color: ${probColor(pct)}">${pct}%</span>
-            <span class="price-tag">$${(prob / 100).toFixed(2)}</span>
+          <span class="rank-badge ${isTop ? 'rank-top' : 'rank-other'}">${isTop ? '#1' : 'Contender'}</span>
+          <div class="comp-label">${comp.compName}</div>
+          <div class="comp-title">${comp.title}</div>
+          <span class="odds-value">${pct}%</span><span class="price-note">$${(pct/100).toFixed(2)}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+          <div class="rivals-section">
+            <div class="rivals-header">Chasing</div>
+            ${rows}
           </div>
-          <div class="prob-bar"><div class="fill" style="width:${pct}%; background: ${probColor(pct)};"></div></div>
-          <div class="competitors">
-            <div class="comp-header">Also in the running</div>
-            ${compRows}
-          </div>
-          <a class="kalshi-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+          <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
         </div>`;
     }
 
-    // Combinatorics for multiples
-    function combinations(arr, k) {
-      if (k === 0) return [[]];
-      if (arr.length === 0) return [];
-      const [first, ...rest] = arr;
-      return [...combinations(rest, k - 1).map(c => [first, ...c]), ...combinations(rest, k)];
+    function combinations(a, k) {
+      if (!k) return [[]];
+      if (!a.length) return [];
+      const [f,...r] = a;
+      return [...combinations(r,k-1).map(c=>[f,...c]), ...combinations(r,k)];
     }
 
-    function probExactly(probs, keys, k) {
-      let total = 0;
-      for (const subset of combinations(keys, k)) {
-        let p = 1;
-        for (const key of keys) {
-          p *= subset.includes(key) ? probs[key] : (1 - probs[key]);
-        }
-        total += p;
+    function probExactly(p, keys, k) {
+      let t = 0;
+      for (const s of combinations(keys, k)) {
+        let v = 1;
+        for (const key of keys) v *= s.includes(key) ? p[key] : (1-p[key]);
+        t += v;
       }
-      return total;
+      return t;
     }
 
-    function probAtLeast(probs, keys, n) {
-      let total = 0;
-      for (let k = n; k <= keys.length; k++) total += probExactly(probs, keys, k);
-      return total;
+    function probAtLeast(p, keys, n) {
+      let t = 0;
+      for (let k = n; k <= keys.length; k++) t += probExactly(p, keys, k);
+      return t;
     }
 
     function renderQuad(probs) {
       const keys = Object.keys(probs);
-      const quad = keys.reduce((acc, k) => acc * probs[k], 1);
-      const pct = (quad * 100).toFixed(1);
-
-      const labels = { pl: 'PL', ucl: 'UCL', fa: 'FA Cup', efl: 'EFL Cup' };
-      const icons = { pl: '\u{1F3C6}', ucl: '\u{1F310}', fa: '\u{1F3C5}', efl: '\u{1F3C8}' };
-      const trophyTags = keys.map(k =>
-        `<span class="qt">${icons[k]} ${labels[k]} (${(probs[k] * 100).toFixed(0)}%)</span>`
-      ).join('');
-
+      const quad = keys.reduce((a, k) => a * probs[k], 1);
+      const labels = { pl:'PL', ucl:'UCL', fa:'FA Cup', efl:'EFL Cup' };
+      const tags = keys.map(k => `<span class="tag">${labels[k]} ${(probs[k]*100).toFixed(0)}%</span>`).join('');
       const formula = keys.map(k => probs[k].toFixed(2)).join(' \u00D7 ');
-
-      document.getElementById('quadCard').innerHTML = `
-        <div class="quad-label">Premier League + Champions League + FA Cup + EFL Cup</div>
-        <div class="quad-name">The Quadruple</div>
-        <div class="quad-desc">Win all four major trophies in a single season. No English club has ever achieved this.</div>
-        <div class="quad-trophies">${trophyTags}</div>
-        <div class="quad-odds">
-          <span class="big-number" style="color: var(--arsenal-red);">${pct}%</span>
-          <span class="calc-note">Implied &middot; ${formula}</span>
+      document.getElementById('quadContent').innerHTML = `
+        <div class="quad-label">PL + UCL + FA Cup + EFL Cup</div>
+        <div class="quad-heading">The Quadruple</div>
+        <div class="quad-desc">Win all four major trophies in one season. No English club has ever done this.</div>
+        <div class="trophy-tags">${tags}</div>
+        <div class="quad-result">
+          <span class="big-pct">${(quad*100).toFixed(1)}%</span>
+          <span class="formula">${formula}</span>
         </div>`;
     }
 
     function renderMultiples(probs) {
       const keys = Object.keys(probs);
       const data = [
-        { count: '1+', label: 'At Least One Trophy', prob: probAtLeast(probs, keys, 1), color: 'var(--green)' },
-        { count: '2+', label: 'At Least Two Trophies', prob: probAtLeast(probs, keys, 2), color: 'var(--amber)' },
-        { count: '3+', label: 'At Least Three Trophies', prob: probAtLeast(probs, keys, 3), color: 'var(--arsenal-red)' }
+        { n:'1+', label:'At Least 1 Trophy', p: probAtLeast(probs,keys,1), c:'var(--green)' },
+        { n:'2+', label:'At Least 2 Trophies', p: probAtLeast(probs,keys,2), c:'var(--amber)' },
+        { n:'3+', label:'At Least 3 Trophies', p: probAtLeast(probs,keys,3), c:'var(--red)' },
       ];
-
       document.getElementById('multiplesGrid').innerHTML = data.map(d => `
         <div class="multi-card">
-          <div class="multi-count">${d.count}</div>
-          <div class="multi-label">${d.label}</div>
-          <div class="multi-odds" style="color: ${d.color};">${(d.prob * 100).toFixed(1)}%</div>
-          <div class="multi-note">Inclusion-exclusion across all combinations</div>
-        </div>`
-      ).join('');
+          <div class="multi-n">${d.n}</div>
+          <div class="multi-desc">${d.label}</div>
+          <div class="multi-pct" style="color:${d.c}">${(d.p*100).toFixed(1)}%</div>
+        </div>`).join('');
     }
 
     async function refreshOdds() {
       const btn = document.getElementById('refreshBtn');
       const status = document.getElementById('refreshStatus');
       btn.classList.add('loading');
-      status.className = 'refresh-status';
-      status.textContent = 'Fetching from Kalshi...';
-
+      status.className = 'status-text';
+      status.textContent = 'Fetching...';
       try {
         const probs = {};
-        let gridHtml = '';
-
-        // Fetch sequentially with delays to avoid Kalshi rate limits
+        let html = '';
         for (let i = 0; i < COMPETITIONS.length; i++) {
           if (i > 0) await delay(500);
           const comp = COMPETITIONS[i];
-          status.textContent = `Fetching ${comp.compName}...`;
-
+          status.textContent = `${comp.compName}...`;
           const markets = await fetchCompetition(comp);
-
-          // Find Arsenal
-          const arsenalMarket = markets.find(m => m.ticker === comp.arsenalTicker);
-          if (!arsenalMarket) {
-            console.warn(`Arsenal market not found for ${comp.series}`);
-            continue;
-          }
-
-          // Sort all others by mid-price descending, exclude Arsenal
-          const others = markets
-            .filter(m => m.ticker !== comp.arsenalTicker)
-            .map(m => ({ ...m, _mid: midPrice(m) }))
-            .sort((a, b) => b._mid - a._mid)
-            .slice(0, comp.topN);
-
-          const arsenalProb = midPrice(arsenalMarket) / 100;
-          probs[comp.key] = arsenalProb;
-
-          gridHtml += renderTrophyCard(comp, arsenalMarket, others);
+          const ars = markets.find(m => m.ticker === comp.arsenalTicker);
+          if (!ars) continue;
+          const others = markets.filter(m => m.ticker !== comp.arsenalTicker)
+            .map(m => ({...m, _m: midPrice(m)})).sort((a,b) => b._m - a._m).slice(0, comp.topN);
+          probs[comp.key] = midPrice(ars) / 100;
+          html += renderCard(comp, ars, others);
         }
-
-        document.getElementById('trophyGrid').innerHTML = gridHtml;
+        document.getElementById('trophyGrid').innerHTML = html;
         renderQuad(probs);
         renderMultiples(probs);
-
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        status.className = 'refresh-status success';
-        status.textContent = `Updated ${timeStr}`;
+        status.className = 'status-text ok';
+        status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       } catch (err) {
-        console.error('Refresh failed:', err);
-        status.className = 'refresh-status error';
+        console.error(err);
+        status.className = 'status-text err';
         status.textContent = `Error: ${err.message}`;
       } finally {
         btn.classList.remove('loading');
       }
     }
 
-    // Auto-load on page open
     refreshOdds();
   </script>
 </body>
