@@ -6,17 +6,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Live Arsenal quadruple odds from Kalshi prediction markets. Track Premier League, Champions League, FA Cup & EFL Cup probabilities in real time.">
+  <meta name="description" content="Live Arsenal Golden Double odds from Kalshi prediction markets. Track Premier League and Champions League probabilities in real time.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Arsenal Quad Tracker">
-  <meta property="og:description" content="Can Arsenal win all four? Live odds from Kalshi for the Premier League, Champions League, FA Cup & Carabao Cup.">
+  <meta property="og:title" content="Arsenal Golden Double Tracker">
+  <meta property="og:description" content="Can Arsenal win the Golden Double? Live odds from Kalshi for the Premier League and Champions League.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <meta property="og:url" content="https://arsenal-quad.netlify.app">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Arsenal Quad Tracker">
-  <meta name="twitter:description" content="Can Arsenal win all four? Live odds from Kalshi.">
+  <meta name="twitter:title" content="Arsenal Golden Double Tracker">
+  <meta name="twitter:description" content="Can Arsenal win the Golden Double? Live odds from Kalshi.">
   <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
-  <title>Arsenal Quad Tracker</title>
+  <title>Arsenal Golden Double Tracker</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -174,7 +174,7 @@
     /* Trophy grid */
     .trophy-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1rem;
       margin-bottom: 2.5rem;
     }
@@ -394,52 +394,6 @@
       opacity: 0.6;
     }
 
-    /* Multiples */
-    .multiples-section { margin-bottom: 2.5rem; }
-
-    .multiples-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-
-    .multi-card {
-      background: var(--card-bg);
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      padding: 1.3rem;
-      text-align: center;
-      transition: border-color 0.15s;
-    }
-
-    .multi-card:hover { border-color: var(--red); }
-
-    .multi-card .multi-n {
-      font-size: 1.6rem;
-      font-weight: 900;
-      color: var(--red);
-      margin-bottom: 0.1rem;
-    }
-
-    .multi-card .multi-desc {
-      font-size: 0.68rem;
-      color: var(--text-mid);
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .multi-card .multi-pct {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 0.1rem;
-    }
-
-    .multi-card .multi-sub {
-      font-size: 0.55rem;
-      color: var(--text-light);
-      font-weight: 500;
-    }
-
     /* Method */
     .method-box {
       border: 1px solid var(--border);
@@ -505,7 +459,6 @@
     }
 
     @media (max-width: 850px) {
-      .trophy-grid { grid-template-columns: 1fr 1fr; }
       .sketch-player { display: none; }
     }
 
@@ -513,24 +466,19 @@
       .container { padding: 1.5rem 1rem; }
       header { flex-direction: column; text-align: center; }
       header h1 { font-size: 1.6rem; }
-      .trophy-grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+      .trophy-grid { gap: 0.7rem; }
       .trophy-card { padding: 1rem; }
       .trophy-card .comp-title { font-size: 0.78rem; }
       .trophy-card .odds-value { font-size: 1.6rem; }
       .trophy-card .rank-badge { font-size: 0.45rem; padding: 0.1rem 0.35rem; }
       .rival-row .name, .rival-row .odds { font-size: 0.58rem; }
-      .multiples-grid { gap: 0.7rem; }
-      .multi-card { padding: 1rem 0.6rem; }
-      .multi-card .multi-n { font-size: 1.3rem; }
-      .multi-card .multi-desc { font-size: 0.6rem; }
-      .multi-card .multi-pct { font-size: 1.15rem; }
       .quad-card { padding: 1.2rem; }
       .quad-card .quad-heading { font-size: 1.15rem; }
       .quad-result .big-pct { font-size: 2.1rem; }
       .quad-sketch-wrap { display: none; }
     }
 
-    @media (max-width: 360px) {
+    @media (max-width: 420px) {
       .trophy-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -752,7 +700,7 @@
     <header>
       <div class="header-left">
         <div class="season-badge">2025-26 Season</div>
-        <h1>Arsenal <span class="accent">Quad Tracker</span></h1>
+        <h1>Arsenal <span class="accent">Golden Double</span></h1>
         <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
       </div>
       <!-- Cartoon sketch: player dribbling -->
@@ -812,9 +760,9 @@
     <div class="section-title">Individual Trophy Odds</div>
     <div class="trophy-grid" id="trophyGrid"></div>
 
-    <!-- Quad -->
+    <!-- Double -->
     <div class="quad-section">
-      <div class="section-title">The Quadruple</div>
+      <div class="section-title">The Golden Double</div>
       <div class="quad-card" id="quadCard">
         <div class="quad-layout">
           <div class="quad-body" id="quadContent"></div>
@@ -865,20 +813,13 @@
       </div>
     </div>
 
-    <!-- Multiples -->
-    <div class="multiples-section">
-      <div class="section-title">Trophy Multiples</div>
-      <div class="multiples-grid" id="multiplesGrid"></div>
-    </div>
-
     <!-- Method -->
     <div class="method-box">
       <h3>How these are calculated</h3>
       <p>
         Individual probabilities come from Kalshi market mid-prices (avg of best bid and ask, in cents).
-        Multi-trophy odds treat each competition as independent. The "at least N" figures use
-        inclusion-exclusion over all C(4,k) combinations. This is a simplification &mdash; fatigue and
-        fixture congestion create real correlations.
+        The Golden Double figure assumes the two competitions are independent and multiplies them.
+        This is a simplification &mdash; fatigue and fixture congestion create real correlations.
       </p>
     </div>
 
@@ -913,24 +854,6 @@
         title: 'European Champions',
         kalshiUrl: 'https://kalshi.com/markets/kxucl/uefa-champions-league/kxucl-26',
         topN: 4
-      },
-      {
-        key: 'fa',
-        series: 'KXFACUP',
-        arsenalTicker: 'KXFACUP-26-ARS',
-        compName: 'FA Cup',
-        title: 'FA Cup Winners',
-        kalshiUrl: 'https://kalshi.com/markets/kxfacup/fa-cup/kxfacup-26',
-        topN: 3
-      },
-      {
-        key: 'efl',
-        series: 'KXEFLCUP',
-        arsenalTicker: 'KXEFLCUP-26-ARS',
-        compName: 'EFL Cup',
-        title: 'Carabao Cup Winners',
-        kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-26',
-        topN: 2
       }
     ];
 
@@ -997,59 +920,21 @@
         </div>`;
     }
 
-    function combinations(a, k) {
-      if (!k) return [[]];
-      if (!a.length) return [];
-      const [f,...r] = a;
-      return [...combinations(r,k-1).map(c=>[f,...c]), ...combinations(r,k)];
-    }
-
-    function probExactly(p, keys, k) {
-      let t = 0;
-      for (const s of combinations(keys, k)) {
-        let v = 1;
-        for (const key of keys) v *= s.includes(key) ? p[key] : (1-p[key]);
-        t += v;
-      }
-      return t;
-    }
-
-    function probAtLeast(p, keys, n) {
-      let t = 0;
-      for (let k = n; k <= keys.length; k++) t += probExactly(p, keys, k);
-      return t;
-    }
-
-    function renderQuad(probs) {
+    function renderDouble(probs) {
       const keys = Object.keys(probs);
-      const quad = keys.reduce((a, k) => a * probs[k], 1);
-      const labels = { pl:'PL', ucl:'UCL', fa:'FA Cup', efl:'EFL Cup' };
+      const combined = keys.reduce((a, k) => a * probs[k], 1);
+      const labels = { pl:'PL', ucl:'UCL' };
       const tags = keys.map(k => `<span class="tag">${labels[k]} ${(probs[k]*100).toFixed(1)}%</span>`).join('');
       const formula = keys.map(k => probs[k].toFixed(2)).join(' \u00D7 ');
       document.getElementById('quadContent').innerHTML = `
-        <div class="quad-label">PL + UCL + FA Cup + EFL Cup</div>
-        <div class="quad-heading">The Quadruple</div>
-        <div class="quad-desc">Win all four major trophies in one season. No English club has ever done this.</div>
+        <div class="quad-label">PL + UCL</div>
+        <div class="quad-heading">The Golden Double</div>
+        <div class="quad-desc">Win the Premier League and Champions League in the same season. Arsenal have never done it.</div>
         <div class="trophy-tags">${tags}</div>
         <div class="quad-result">
-          <span class="big-pct">${(quad*100).toFixed(1)}%</span>
+          <span class="big-pct">${(combined*100).toFixed(1)}%</span>
           <span class="formula">${formula}</span>
         </div>`;
-    }
-
-    function renderMultiples(probs) {
-      const keys = Object.keys(probs);
-      const data = [
-        { n:'1+', label:'At Least 1 Trophy', p: probAtLeast(probs,keys,1), c:'var(--green)' },
-        { n:'2+', label:'At Least 2 Trophies', p: probAtLeast(probs,keys,2), c:'var(--amber)' },
-        { n:'3+', label:'At Least 3 Trophies', p: probAtLeast(probs,keys,3), c:'var(--red)' },
-      ];
-      document.getElementById('multiplesGrid').innerHTML = data.map(d => `
-        <div class="multi-card">
-          <div class="multi-n">${d.n}</div>
-          <div class="multi-desc">${d.label}</div>
-          <div class="multi-pct" style="color:${d.c}">${(d.p*100).toFixed(1)}%</div>
-        </div>`).join('');
     }
 
     async function refreshOdds() {
@@ -1073,8 +958,7 @@
           html += renderCard(comp, ars, others);
         }
         document.getElementById('trophyGrid').innerHTML = html;
-        renderQuad(probs);
-        renderMultiples(probs);
+        renderDouble(probs);
         status.className = 'status-text ok';
         status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       } catch (err) {
