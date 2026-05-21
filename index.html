@@ -262,6 +262,11 @@
       background: var(--white);
     }
 
+    .rank-clinched {
+      background: var(--green);
+      color: #fff;
+    }
+
     /* Competitors */
     .rivals-section {
       margin-top: 0.65rem;
@@ -394,6 +399,46 @@
       opacity: 0.6;
     }
 
+    /* Multiples */
+    .multiples-section { margin-bottom: 2.5rem; }
+
+    .multiples-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .multi-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      padding: 1.3rem;
+      text-align: center;
+      transition: border-color 0.15s;
+    }
+
+    .multi-card:hover { border-color: var(--red); }
+
+    .multi-card .multi-n {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--red);
+      margin-bottom: 0.1rem;
+    }
+
+    .multi-card .multi-desc {
+      font-size: 0.68rem;
+      color: var(--text-mid);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .multi-card .multi-pct {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.1rem;
+    }
+
     /* Method */
     .method-box {
       border: 1px solid var(--border);
@@ -472,6 +517,11 @@
       .trophy-card .odds-value { font-size: 1.6rem; }
       .trophy-card .rank-badge { font-size: 0.45rem; padding: 0.1rem 0.35rem; }
       .rival-row .name, .rival-row .odds { font-size: 0.58rem; }
+      .multiples-grid { gap: 0.7rem; }
+      .multi-card { padding: 1rem 0.6rem; }
+      .multi-card .multi-n { font-size: 1.3rem; }
+      .multi-card .multi-desc { font-size: 0.6rem; }
+      .multi-card .multi-pct { font-size: 1.15rem; }
       .quad-card { padding: 1.2rem; }
       .quad-card .quad-heading { font-size: 1.15rem; }
       .quad-result .big-pct { font-size: 2.1rem; }
@@ -700,7 +750,7 @@
     <header>
       <div class="header-left">
         <div class="season-badge">2025-26 Season</div>
-        <h1>Arsenal <span class="accent">Golden Double</span></h1>
+        <h1>Arsenal <span class="accent">Golden Double Tracker</span></h1>
         <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
       </div>
       <!-- Cartoon sketch: player dribbling -->
@@ -813,13 +863,19 @@
       </div>
     </div>
 
+    <!-- Multiples -->
+    <div class="multiples-section">
+      <div class="section-title">Trophy Multiples</div>
+      <div class="multiples-grid" id="multiplesGrid"></div>
+    </div>
+
     <!-- Method -->
     <div class="method-box">
       <h3>How these are calculated</h3>
       <p>
         Individual probabilities come from Kalshi market mid-prices (avg of best bid and ask, in cents).
-        The Golden Double figure assumes the two competitions are independent and multiplies them.
-        This is a simplification &mdash; fatigue and fixture congestion create real correlations.
+        The Premier League is already clinched, so it's fixed at 100%. The Golden Double figure assumes
+        the two competitions are independent and multiplies them.
       </p>
     </div>
 
@@ -844,7 +900,8 @@
         compName: 'Premier League',
         title: 'League Champions',
         kalshiUrl: 'https://kalshi.com/markets/kxpremierleague/premier-league/kxpremierleague-26',
-        topN: 3
+        topN: 3,
+        clinched: true
       },
       {
         key: 'ucl',
@@ -899,6 +956,21 @@
     }
 
     function renderCard(comp, ars, rivals) {
+      if (comp.clinched) {
+        return `
+          <div class="trophy-card">
+            <span class="rank-badge rank-clinched">Clinched</span>
+            <div class="comp-label">${comp.compName}</div>
+            <div class="comp-title">${comp.title}</div>
+            <span class="odds-value">100.0%</span><span class="price-note">$1.00</span>
+            <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+            <div class="rivals-section">
+              <div class="rivals-header">Result</div>
+              <div class="rival-row"><span class="name">Arsenal — Champions</span><span class="odds">Won</span></div>
+            </div>
+            <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+          </div>`;
+      }
       const pct = midPrice(ars);
       const isTop = !rivals.length || pct >= midPrice(rivals[0]);
       let rows = '';
@@ -920,6 +992,23 @@
         </div>`;
     }
 
+    function renderMultiples(probs) {
+      const p1 = probs.pl ?? 0;
+      const p2 = probs.ucl ?? 0;
+      const atLeast1 = 1 - (1 - p1) * (1 - p2);
+      const atLeast2 = p1 * p2;
+      const data = [
+        { n:'1+', label:'At Least 1 Trophy', p: atLeast1, c:'var(--green)' },
+        { n:'2', label:'Both Trophies', p: atLeast2, c:'var(--red)' },
+      ];
+      document.getElementById('multiplesGrid').innerHTML = data.map(d => `
+        <div class="multi-card">
+          <div class="multi-n">${d.n}</div>
+          <div class="multi-desc">${d.label}</div>
+          <div class="multi-pct" style="color:${d.c}">${(d.p*100).toFixed(1)}%</div>
+        </div>`).join('');
+    }
+
     function renderDouble(probs) {
       const keys = Object.keys(probs);
       const combined = keys.reduce((a, k) => a * probs[k], 1);
@@ -929,7 +1018,7 @@
       document.getElementById('quadContent').innerHTML = `
         <div class="quad-label">PL + UCL</div>
         <div class="quad-heading">The Golden Double</div>
-        <div class="quad-desc">Win the Premier League and Champions League in the same season. Arsenal have never done it.</div>
+        <div class="quad-desc">Win the Premier League and Champions League in the same season. The league is in the bag &mdash; UCL is all that's left.</div>
         <div class="trophy-tags">${tags}</div>
         <div class="quad-result">
           <span class="big-pct">${(combined*100).toFixed(1)}%</span>
@@ -949,6 +1038,11 @@
         const probs = {};
         let html = '';
         for (const comp of COMPETITIONS) {
+          if (comp.clinched) {
+            probs[comp.key] = 1;
+            html += renderCard(comp, null, []);
+            continue;
+          }
           const markets = allData[comp.series] || [];
           const ars = markets.find(m => m.ticker === comp.arsenalTicker);
           if (!ars) continue;
@@ -959,6 +1053,7 @@
         }
         document.getElementById('trophyGrid').innerHTML = html;
         renderDouble(probs);
+        renderMultiples(probs);
         status.className = 'status-text ok';
         status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       } catch (err) {
