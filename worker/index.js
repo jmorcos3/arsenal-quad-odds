@@ -5,7 +5,7 @@ const ALLOWED_ORIGINS = [
 ];
 const CACHE_TTL = 120;
 
-const SERIES = ['KXPREMIERLEAGUE', 'KXUCL', 'KXFACUP', 'KXEFLCUP'];
+const SERIES = ['KXPREMIERLEAGUE', 'KXUCL'];
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -40,7 +40,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Batch endpoint - fetches all 4 series in one call
+    // Batch endpoint - fetches all series in one call
     if (path === '/batch') {
       const cacheKey = new Request('https://cache.internal/batch-all', { method: 'GET' });
       const cache = caches.default;
