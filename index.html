@@ -1026,12 +1026,27 @@
         </div>`;
     }
 
+    function renderClinchedOnly() {
+      const probs = {};
+      let html = '';
+      for (const comp of COMPETITIONS) {
+        if (comp.clinched) {
+          probs[comp.key] = 1;
+          html += renderCard(comp, null, []);
+        }
+      }
+      document.getElementById('trophyGrid').innerHTML = html;
+      renderDouble(probs);
+      renderMultiples(probs);
+    }
+
     async function refreshOdds() {
       const btn = document.getElementById('refreshBtn');
       const status = document.getElementById('refreshStatus');
       btn.classList.add('loading');
       status.className = 'status-text';
       status.textContent = 'Fetching...';
+      renderClinchedOnly();
       try {
         status.textContent = 'Fetching all markets...';
         const allData = await fetchAllMarkets();
