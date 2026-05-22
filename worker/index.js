@@ -2,6 +2,7 @@ const KALSHI_API = 'https://api.elections.kalshi.com/trade-api/v2';
 const ALLOWED_ORIGINS = [
   'https://jmorcos3.github.io',
   'https://arsenal-quad.netlify.app',
+  'https://arsenal-goldendouble.netlify.app',
 ];
 const CACHE_TTL = 120;
 
