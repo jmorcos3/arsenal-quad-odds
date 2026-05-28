@@ -938,9 +938,11 @@
     }
 
     function midPrice(m) {
-      const b = m.yes_bid || 0, a = m.yes_ask || 0;
+      const b = m.yes_bid_dollars !== undefined ? parseFloat(m.yes_bid_dollars) * 100 : (m.yes_bid || 0);
+      const a = m.yes_ask_dollars !== undefined ? parseFloat(m.yes_ask_dollars) * 100 : (m.yes_ask || 0);
       if (!b && !a) return 0;
       if (!b) return a;
+      if (!a) return b;
       return (b + a) / 2;
     }
 
