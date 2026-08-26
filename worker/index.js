@@ -3,10 +3,11 @@ const ALLOWED_ORIGINS = [
   'https://jmorcos3.github.io',
   'https://arsenal-quad.netlify.app',
   'https://arsenal-goldendouble.netlify.app',
+  'https://arsenal-pent.netlify.app',
 ];
 const CACHE_TTL = 120;
 
-const SERIES = ['KXPREMIERLEAGUE', 'KXUCL'];
+const SERIES = ['KXPREMIERLEAGUE', 'KXUCL', 'KXFACUP', 'KXEFLCUP'];
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];

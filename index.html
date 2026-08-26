@@ -6,17 +6,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Live Arsenal Golden Double odds from Kalshi prediction markets. Track Premier League and Champions League probabilities in real time.">
+  <meta name="description" content="Live Arsenal Pent odds from Kalshi prediction markets. Premier League, Champions League, FA Cup, Carabao Cup and the Community Shield, priced in real time.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Arsenal Golden Double Tracker">
-  <meta property="og:description" content="Can Arsenal win the Golden Double? Live odds from Kalshi for the Premier League and Champions League.">
+  <meta property="og:title" content="Arsenal Pent Tracker">
+  <meta property="og:description" content="Can Arsenal win all five? Live Kalshi odds for the Premier League, Champions League, FA Cup, Carabao Cup and Community Shield.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <meta property="og:url" content="https://arsenal-quad.netlify.app">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Arsenal Golden Double Tracker">
-  <meta name="twitter:description" content="Can Arsenal win the Golden Double? Live odds from Kalshi.">
+  <meta name="twitter:title" content="Arsenal Pent Tracker">
+  <meta name="twitter:description" content="Can Arsenal win all five? Live Kalshi odds for every trophy still on the table.">
   <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
-  <title>Arsenal Golden Double Tracker</title>
+  <title>Arsenal Pent Tracker</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -179,6 +179,8 @@
       margin-bottom: 2.5rem;
     }
 
+    .trophy-card.is-clinched { grid-column: 1 / -1; }
+
     .trophy-card {
       background: var(--card-bg);
       border: 2px solid var(--border);
@@ -314,10 +316,10 @@
 
     .trophy-card .market-link:hover { color: var(--red); }
 
-    /* Quad card */
-    .quad-section { margin-bottom: 2.5rem; }
+    /* Pent card */
+    .pent-section { margin-bottom: 2.5rem; }
 
-    .quad-card {
+    .pent-card {
       background: var(--white);
       border: 2px solid var(--red);
       border-radius: 6px;
@@ -326,15 +328,15 @@
       overflow: hidden;
     }
 
-    .quad-card .quad-layout {
+    .pent-card .pent-layout {
       display: flex;
       align-items: center;
       gap: 2rem;
     }
 
-    .quad-card .quad-body { flex: 1; }
+    .pent-card .pent-body { flex: 1; }
 
-    .quad-card .quad-label {
+    .pent-card .pent-label {
       font-size: 0.55rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -343,14 +345,14 @@
       margin-bottom: 0.15rem;
     }
 
-    .quad-card .quad-heading {
+    .pent-card .pent-heading {
       font-size: 1.4rem;
       font-weight: 900;
       margin-bottom: 0.3rem;
       letter-spacing: -0.02em;
     }
 
-    .quad-card .quad-desc {
+    .pent-card .pent-desc {
       font-size: 0.72rem;
       color: var(--text-mid);
       line-height: 1.55;
@@ -374,27 +376,27 @@
       background: var(--red-tint);
     }
 
-    .quad-result {
+    .pent-result {
       display: flex;
       align-items: baseline;
       gap: 0.6rem;
     }
 
-    .quad-result .big-pct {
+    .pent-result .big-pct {
       font-size: 2.8rem;
       font-weight: 900;
       color: var(--red);
       letter-spacing: -0.02em;
     }
 
-    .quad-result .formula {
+    .pent-result .formula {
       font-size: 0.62rem;
       color: var(--text-light);
       font-weight: 500;
     }
 
-    /* Sketch decoration in quad */
-    .quad-sketch-wrap {
+    /* Sketch decoration in the pent card */
+    .pent-sketch-wrap {
       flex-shrink: 0;
       opacity: 0.6;
     }
@@ -404,7 +406,7 @@
 
     .multiples-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
 
@@ -426,11 +428,19 @@
       margin-bottom: 0.1rem;
     }
 
+    .multi-card .multi-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.1rem;
+    }
+
     .multi-card .multi-desc {
-      font-size: 0.68rem;
-      color: var(--text-mid);
+      font-size: 0.6rem;
+      color: var(--text-light);
       margin-bottom: 0.5rem;
       font-weight: 500;
+      letter-spacing: 0.01em;
     }
 
     .multi-card .multi-pct {
@@ -505,6 +515,7 @@
 
     @media (max-width: 850px) {
       .sketch-player { display: none; }
+      .multiples-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 500px) {
@@ -520,12 +531,13 @@
       .multiples-grid { gap: 0.7rem; }
       .multi-card { padding: 1rem 0.6rem; }
       .multi-card .multi-n { font-size: 1.3rem; }
-      .multi-card .multi-desc { font-size: 0.6rem; }
+      .multi-card .multi-name { font-size: 0.7rem; }
+      .multi-card .multi-desc { font-size: 0.54rem; }
       .multi-card .multi-pct { font-size: 1.15rem; }
-      .quad-card { padding: 1.2rem; }
-      .quad-card .quad-heading { font-size: 1.15rem; }
-      .quad-result .big-pct { font-size: 2.1rem; }
-      .quad-sketch-wrap { display: none; }
+      .pent-card { padding: 1.2rem; }
+      .pent-card .pent-heading { font-size: 1.15rem; }
+      .pent-result .big-pct { font-size: 2.1rem; }
+      .pent-sketch-wrap { display: none; }
     }
 
     @media (max-width: 420px) {
@@ -731,7 +743,7 @@
       </svg>
     </div>
 
-    <!-- Trophy doodle near quad section -->
+    <!-- Trophy doodle near pent section -->
     <div class="doodle" style="top:610px;right:8px;transform:rotate(3deg);opacity:0.12">
       <svg width="35" height="45" viewBox="0 0 40 50" fill="none">
         <g stroke="#DB0007" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -749,8 +761,8 @@
   <div class="container">
     <header>
       <div class="header-left">
-        <div class="season-badge">2025-26 Season</div>
-        <h1>Arsenal <span class="accent">Golden Double Tracker</span></h1>
+        <div class="season-badge">2026-27 Season</div>
+        <h1>Arsenal <span class="accent">Pent Tracker</span></h1>
         <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
       </div>
       <!-- Cartoon sketch: player dribbling -->
@@ -810,14 +822,14 @@
     <div class="section-title">Individual Trophy Odds</div>
     <div class="trophy-grid" id="trophyGrid"></div>
 
-    <!-- Double -->
-    <div class="quad-section">
-      <div class="section-title">The Golden Double</div>
-      <div class="quad-card" id="quadCard">
-        <div class="quad-layout">
-          <div class="quad-body" id="quadContent"></div>
+    <!-- Pent -->
+    <div class="pent-section">
+      <div class="section-title">The Pent</div>
+      <div class="pent-card" id="pentCard">
+        <div class="pent-layout">
+          <div class="pent-body" id="pentContent"></div>
           <!-- Cartoon sketch: celebrating player with trophy -->
-          <svg class="quad-sketch-wrap" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="pent-sketch-wrap" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#DB0007" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
               <!-- confetti -->
               <rect x="15" y="10" width="4" height="4" rx="1" transform="rotate(15 15 10)" opacity="0.4"/>
@@ -874,8 +886,10 @@
       <h3>How these are calculated</h3>
       <p>
         Individual probabilities come from Kalshi market mid-prices (avg of best bid and ask, in cents).
-        The Premier League is already clinched, so it's fixed at 100%. The Golden Double figure assumes
-        the two competitions are independent and multiplies them.
+        The Community Shield is already won, so it's fixed at 100% &mdash; which is why the Pent and the
+        Quad price identically. Every multiple assumes the competitions are independent and multiplies
+        them, which is a simplification: the same squad plays all five, so fixture congestion and
+        fatigue create real correlations.
       </p>
     </div>
 
@@ -896,22 +910,55 @@
       {
         key: 'pl',
         series: 'KXPREMIERLEAGUE',
-        arsenalTicker: 'KXPREMIERLEAGUE-26-ARS',
+        arsenalTicker: 'KXPREMIERLEAGUE-27-ARS',
         compName: 'Premier League',
         title: 'League Champions',
-        kalshiUrl: 'https://kalshi.com/markets/kxpremierleague/premier-league/kxpremierleague-26',
-        topN: 3,
-        clinched: true
+        kalshiUrl: 'https://kalshi.com/markets/kxpremierleague/premier-league/kxpremierleague-27',
+        topN: 3
       },
       {
         key: 'ucl',
         series: 'KXUCL',
-        arsenalTicker: 'KXUCL-26-ARS',
+        arsenalTicker: 'KXUCL-27-ARS',
         compName: 'Champions League',
         title: 'European Champions',
-        kalshiUrl: 'https://kalshi.com/markets/kxucl/uefa-champions-league/kxucl-26',
+        kalshiUrl: 'https://kalshi.com/markets/kxucl/uefa-champions-league/kxucl-27',
         topN: 4
+      },
+      {
+        key: 'fa',
+        series: 'KXFACUP',
+        arsenalTicker: 'KXFACUP-27-ARS',
+        compName: 'FA Cup',
+        title: 'FA Cup Winners',
+        kalshiUrl: 'https://kalshi.com/markets/kxfacup/fa-cup/kxfacup-27',
+        topN: 3
+      },
+      {
+        key: 'efl',
+        series: 'KXEFLCUP',
+        arsenalTicker: 'KXEFLCUP-27-ARS',
+        compName: 'Carabao Cup',
+        title: 'Carabao Cup Winners',
+        kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-27',
+        topN: 2
+      },
+      {
+        // No Kalshi market: the Shield is already in the cabinet, so it is a fixed 100%.
+        key: 'shield',
+        compName: 'Community Shield',
+        title: 'Community Shield Winners',
+        clinched: true
       }
+    ];
+
+    const SHORT = { pl: 'PL', ucl: 'UCL', fa: 'FA Cup', efl: 'Carabao', shield: 'Shield' };
+
+    const MULTIPLES = [
+      { n: '5', name: 'The Pent',   keys: ['pl','ucl','fa','efl','shield'], c: 'var(--red)' },
+      { n: '4', name: 'The Quad',   keys: ['pl','ucl','fa','efl'],          c: 'var(--red)' },
+      { n: '3', name: 'The Treble', keys: ['pl','ucl','fa'],                c: 'var(--amber)' },
+      { n: '2', name: 'The Duo',    keys: ['pl','ucl'],                     c: 'var(--green)' }
     ];
 
     const TEAM_NAMES = {
@@ -933,8 +980,11 @@
       VIL: 'Villarreal', QAR: 'Qarabag', AST: 'Aston Villa'
     };
 
-    function getTeamName(ticker) {
-      return TEAM_NAMES[ticker.split('-').pop()] || ticker.split('-').pop();
+    // Prefer the short names above, then whatever Kalshi calls the team, so a
+    // club that has never appeared in the map still renders readably.
+    function getTeamName(market) {
+      const code = (market.ticker || '').split('-').pop();
+      return TEAM_NAMES[code] || market.yes_sub_title || code;
     }
 
     function midPrice(m) {
@@ -944,6 +994,26 @@
       if (!b) return a;
       if (!a) return b;
       return (b + a) / 2;
+    }
+
+    // Season tickers roll over (KXFACUP-27-ARS becomes -28), and more than one
+    // season can be open at once, so fall back to the Arsenal market closing soonest.
+    function findArsenal(markets, comp) {
+      const exact = markets.find(m => m.ticker === comp.arsenalTicker);
+      if (exact) return exact;
+      const arsenal = markets.filter(m => (m.ticker || '').toUpperCase().endsWith('-ARS'));
+      if (!arsenal.length) return null;
+      return arsenal.sort((a, b) =>
+        (a.close_time || '9999').localeCompare(b.close_time || '9999'))[0];
+    }
+
+    function product(probs, keys) {
+      if (keys.some(k => probs[k] === undefined)) return null;
+      return keys.reduce((acc, k) => acc * probs[k], 1);
+    }
+
+    function fmtPct(p) {
+      return p === null ? '—' : `${(p * 100).toFixed(1)}%`;
     }
 
     async function fetchAllMarkets(retries = 3) {
@@ -957,27 +1027,43 @@
       throw new Error('Rate limited');
     }
 
+    function renderClinchedCard(comp) {
+      return `
+        <div class="trophy-card is-clinched">
+          <span class="rank-badge rank-clinched">Won</span>
+          <div class="comp-label">${comp.compName}</div>
+          <div class="comp-title">${comp.title}</div>
+          <span class="odds-value">100.0%</span><span class="price-note">$1.00</span>
+          <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+          <div class="rivals-section">
+            <div class="rivals-header">Result</div>
+            <div class="rival-row"><span class="name">Arsenal &mdash; Winners</span><span class="odds">Won</span></div>
+          </div>
+        </div>`;
+    }
+
+    function renderPendingCard(comp) {
+      return `
+        <div class="trophy-card">
+          <span class="rank-badge rank-other">&mdash;</span>
+          <div class="comp-label">${comp.compName}</div>
+          <div class="comp-title">${comp.title}</div>
+          <span class="odds-value">&mdash;</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="rivals-section">
+            <div class="rivals-header">Market</div>
+            <div class="rival-row"><span class="name">No live price</span><span class="odds">&mdash;</span></div>
+          </div>
+          <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+        </div>`;
+    }
+
     function renderCard(comp, ars, rivals) {
-      if (comp.clinched) {
-        return `
-          <div class="trophy-card">
-            <span class="rank-badge rank-clinched">Clinched</span>
-            <div class="comp-label">${comp.compName}</div>
-            <div class="comp-title">${comp.title}</div>
-            <span class="odds-value">100.0%</span><span class="price-note">$1.00</span>
-            <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
-            <div class="rivals-section">
-              <div class="rivals-header">Result</div>
-              <div class="rival-row"><span class="name">Arsenal — Champions</span><span class="odds">Won</span></div>
-            </div>
-            <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
-          </div>`;
-      }
       const pct = midPrice(ars);
       const isTop = !rivals.length || pct >= midPrice(rivals[0]);
       let rows = '';
       for (const r of rivals) {
-        rows += `<div class="rival-row"><span class="name">${getTeamName(r.ticker)}</span><span class="odds">${midPrice(r).toFixed(1)}%</span></div>`;
+        rows += `<div class="rival-row"><span class="name">${getTeamName(r)}</span><span class="odds">${midPrice(r).toFixed(1)}%</span></div>`;
       }
       return `
         <div class="trophy-card">
@@ -995,50 +1081,49 @@
     }
 
     function renderMultiples(probs) {
-      const p1 = probs.pl ?? 0;
-      const p2 = probs.ucl ?? 0;
-      const atLeast1 = 1 - (1 - p1) * (1 - p2);
-      const atLeast2 = p1 * p2;
-      const data = [
-        { n:'1+', label:'At Least 1 Trophy', p: atLeast1, c:'var(--green)' },
-        { n:'2', label:'Both Trophies', p: atLeast2, c:'var(--red)' },
-      ];
-      document.getElementById('multiplesGrid').innerHTML = data.map(d => `
+      document.getElementById('multiplesGrid').innerHTML = MULTIPLES.map(m => `
         <div class="multi-card">
-          <div class="multi-n">${d.n}</div>
-          <div class="multi-desc">${d.label}</div>
-          <div class="multi-pct" style="color:${d.c}">${(d.p*100).toFixed(1)}%</div>
+          <div class="multi-n">${m.n}</div>
+          <div class="multi-name">${m.name}</div>
+          <div class="multi-desc">${m.keys.map(k => SHORT[k]).join(' + ')}</div>
+          <div class="multi-pct" style="color:${m.c}">${fmtPct(product(probs, m.keys))}</div>
         </div>`).join('');
     }
 
-    function renderDouble(probs) {
-      const keys = Object.keys(probs);
-      const combined = keys.reduce((a, k) => a * probs[k], 1);
-      const labels = { pl:'PL', ucl:'UCL' };
-      const tags = keys.map(k => `<span class="tag">${labels[k]} ${(probs[k]*100).toFixed(1)}%</span>`).join('');
-      const formula = keys.map(k => probs[k].toFixed(2)).join(' \u00D7 ');
-      document.getElementById('quadContent').innerHTML = `
-        <div class="quad-label">PL + UCL</div>
-        <div class="quad-heading">The Golden Double</div>
-        <div class="quad-desc">Win the Premier League and Champions League in the same season. The league is in the bag &mdash; UCL is all that's left.</div>
+    function renderPent(probs) {
+      const keys = COMPETITIONS.map(c => c.key);
+      const combined = product(probs, keys);
+      const tags = COMPETITIONS
+        .filter(c => probs[c.key] !== undefined)
+        .map(c => `<span class="tag">${SHORT[c.key]} ${(probs[c.key]*100).toFixed(1)}%</span>`)
+        .join('');
+      const formula = combined === null ? '' : keys.map(k => probs[k].toFixed(2)).join(' × ');
+      document.getElementById('pentContent').innerHTML = `
+        <div class="pent-label">PL + UCL + FA Cup + Carabao + Shield</div>
+        <div class="pent-heading">The Pent</div>
+        <div class="pent-desc">Win all five trophies Arsenal can lift in 2026-27. The Community Shield is already in the cabinet &mdash; the other four are still live.</div>
         <div class="trophy-tags">${tags}</div>
-        <div class="quad-result">
-          <span class="big-pct">${(combined*100).toFixed(1)}%</span>
+        <div class="pent-result">
+          <span class="big-pct">${fmtPct(combined)}</span>
           <span class="formula">${formula}</span>
         </div>`;
     }
 
-    function renderClinchedOnly() {
+    // Shown while the markets load, and left in place if the fetch fails, so the
+    // Shield still reads as won rather than as a blank page.
+    function renderFallback() {
       const probs = {};
       let html = '';
       for (const comp of COMPETITIONS) {
         if (comp.clinched) {
           probs[comp.key] = 1;
-          html += renderCard(comp, null, []);
+          html += renderClinchedCard(comp);
+        } else {
+          html += renderPendingCard(comp);
         }
       }
       document.getElementById('trophyGrid').innerHTML = html;
-      renderDouble(probs);
+      renderPent(probs);
       renderMultiples(probs);
     }
 
@@ -1048,7 +1133,7 @@
       btn.classList.add('loading');
       status.className = 'status-text';
       status.textContent = 'Fetching...';
-      renderClinchedOnly();
+      renderFallback();
       try {
         status.textContent = 'Fetching all markets...';
         const allData = await fetchAllMarkets();
@@ -1057,19 +1142,24 @@
         for (const comp of COMPETITIONS) {
           if (comp.clinched) {
             probs[comp.key] = 1;
-            html += renderCard(comp, null, []);
+            html += renderClinchedCard(comp);
             continue;
           }
           const markets = allData[comp.series] || [];
-          const ars = markets.find(m => m.ticker === comp.arsenalTicker);
-          if (!ars) continue;
-          const others = markets.filter(m => m.ticker !== comp.arsenalTicker)
-            .map(m => ({...m, _m: midPrice(m)})).sort((a,b) => b._m - a._m).slice(0, comp.topN);
+          const ars = findArsenal(markets, comp);
+          if (!ars) { html += renderPendingCard(comp); continue; }
+          // Rivals come from the same event, so an adjacent season's market
+          // cannot leak into the chasing list.
+          const others = markets
+            .filter(m => m.ticker !== ars.ticker && (!ars.event_ticker || m.event_ticker === ars.event_ticker))
+            .map(m => ({...m, _m: midPrice(m)}))
+            .sort((a, b) => b._m - a._m)
+            .slice(0, comp.topN);
           probs[comp.key] = midPrice(ars) / 100;
           html += renderCard(comp, ars, others);
         }
         document.getElementById('trophyGrid').innerHTML = html;
-        renderDouble(probs);
+        renderPent(probs);
         renderMultiples(probs);
         status.className = 'status-text ok';
         status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
