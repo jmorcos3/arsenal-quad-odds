@@ -7,7 +7,7 @@ const ALLOWED_ORIGINS = [
 ];
 const CACHE_TTL = 120;
 
-const SERIES = ['KXPREMIERLEAGUE', 'KXUCL', 'KXFACUP', 'KXEFLCUP'];
+const SERIES = ['KXPREMIERLEAGUE', 'KXUCL', 'KXFACUP', 'KXEFLCUP', 'KXBALLONDOR'];
 
 function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];

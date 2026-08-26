@@ -449,6 +449,15 @@
       margin-bottom: 0.1rem;
     }
 
+    /* Ballon d'Or */
+    .ballon-section[hidden] { display: none; }
+
+    .ballon-card .player-note {
+      font-size: 0.6rem;
+      color: var(--text-light);
+      margin-bottom: 0.6rem;
+    }
+
     /* Method */
     .method-box {
       border: 1px solid var(--border);
@@ -881,6 +890,12 @@
       <div class="multiples-grid" id="multiplesGrid"></div>
     </div>
 
+    <!-- Ballon d'Or: only rendered when an Arsenal player prices inside the top 20 -->
+    <div class="ballon-section" id="ballonSection" hidden>
+      <div class="section-title">Ballon d'Or Watch</div>
+      <div class="trophy-grid" id="ballonGrid"></div>
+    </div>
+
     <!-- Method -->
     <div class="method-box">
       <h3>How these are calculated</h3>
@@ -889,7 +904,10 @@
         The Community Shield is already won, so it's fixed at 100% &mdash; which is why the Pent and the
         Quad price identically. Every multiple assumes the competitions are independent and multiplies
         them, which is a simplification: the same squad plays all five, so fixture congestion and
-        fatigue create real correlations.
+        fatigue create real correlations. Ballon d'Or Watch appears only when an Arsenal player
+        prices inside the top 20 of Kalshi's field; rank is by mid-price with ties sharing the best
+        rank, so a long tail of players on the same cent all hold it rather than being split
+        alphabetically.
       </p>
     </div>
 
@@ -958,7 +976,24 @@
       { n: '5', name: 'The Pent',   keys: ['pl','ucl','fa','efl','shield'], c: 'var(--red)' },
       { n: '4', name: 'The Quad',   keys: ['pl','ucl','fa','efl'],          c: 'var(--red)' },
       { n: '3', name: 'The Treble', keys: ['pl','ucl','fa'],                c: 'var(--amber)' },
-      { n: '2', name: 'The Duo',    keys: ['pl','ucl'],                     c: 'var(--green)' }
+      { n: '2', name: 'The Double', keys: ['pl','ucl'],                     c: 'var(--green)' }
+    ];
+
+    const BALLON_SERIES = 'KXBALLONDOR';
+    const BALLON_URL = 'https://kalshi.com/markets/kxballondor';
+    const BALLON_TOP_N = 20;
+
+    // Kalshi lists Ballon d'Or candidates by name with no club, so the squad has
+    // to be named here. Worth a look each transfer window.
+    const ARSENAL_SQUAD = [
+      'David Raya', 'Kepa Arrizabalaga',
+      'Ben White', 'William Saliba', 'Gabriel', 'Gabriel Magalhaes',
+      'Cristhian Mosquera', 'Riccardo Calafiori', 'Jurrien Timber',
+      'Myles Lewis-Skelly', 'Piero Hincapie', 'Ezri Konsa',
+      'Martin Odegaard', 'Declan Rice', 'Martin Zubimendi', 'Mikel Merino',
+      'Bruno Guimaraes', 'Ethan Nwaneri', 'Axel Donczew',
+      'Bukayo Saka', 'Noni Madueke', 'Leandro Trossard', 'Eberechi Eze',
+      'Kai Havertz', 'Viktor Gyokeres', 'Christos Tzolis'
     ];
 
     const TEAM_NAMES = {
@@ -1033,7 +1068,7 @@
           <span class="rank-badge rank-clinched">Won</span>
           <div class="comp-label">${comp.compName}</div>
           <div class="comp-title">${comp.title}</div>
-          <span class="odds-value">100.0%</span><span class="price-note">$1.00</span>
+          <span class="odds-value">100.0%</span><span class="price-note">100.0&cent;</span>
           <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
           <div class="rivals-section">
             <div class="rivals-header">Result</div>
@@ -1070,7 +1105,7 @@
           <span class="rank-badge ${isTop ? 'rank-top' : 'rank-other'}">${isTop ? '#1' : 'Contender'}</span>
           <div class="comp-label">${comp.compName}</div>
           <div class="comp-title">${comp.title}</div>
-          <span class="odds-value">${pct.toFixed(1)}%</span><span class="price-note">$${(pct/100).toFixed(2)}</span>
+          <span class="odds-value">${pct.toFixed(1)}%</span><span class="price-note">${pct.toFixed(1)}&cent;</span>
           <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
           <div class="rivals-section">
             <div class="rivals-header">Chasing</div>
@@ -1078,6 +1113,68 @@
           </div>
           <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
         </div>`;
+    }
+
+    // Kalshi writes names unaccented ("Ousmane Dembele"), so compare on a
+    // stripped-down form. NFD leaves 0xF8 alone, hence the explicit map.
+    function normalizeName(name) {
+      return (name || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/ø/gi, 'o').replace(/æ/gi, 'ae').replace(/ł/gi, 'l')
+        .replace(/[^a-z]/gi, '')
+        .toLowerCase();
+    }
+
+    const ARSENAL_SQUAD_KEYS = new Set(ARSENAL_SQUAD.map(normalizeName));
+
+    // Standard competition ranking: everyone on the same price shares the best
+    // rank they could hold. The tail of this market is a long tie on 1 cent, so
+    // breaking it alphabetically would include or drop players at random.
+    function rankField(markets) {
+      const priced = markets
+        .map(m => ({ market: m, pct: midPrice(m), name: m.yes_sub_title || getTeamName(m) }))
+        .sort((a, b) => b.pct - a.pct);
+      return priced.map(entry => ({
+        ...entry,
+        rank: 1 + priced.filter(other => other.pct > entry.pct).length,
+        tiedWith: priced.filter(other => other.pct === entry.pct).length - 1
+      }));
+    }
+
+    function renderBallon(markets) {
+      const section = document.getElementById('ballonSection');
+      if (!markets.length) { section.hidden = true; return; }
+
+      const field = rankField(markets);
+      const leader = field[0];
+      const arsenal = field.filter(e =>
+        ARSENAL_SQUAD_KEYS.has(normalizeName(e.name)) && e.rank <= BALLON_TOP_N);
+
+      // Nothing to celebrate is the normal case — stay off the page entirely.
+      if (!arsenal.length) { section.hidden = true; return; }
+
+      document.getElementById('ballonGrid').innerHTML = arsenal.map(e => {
+        const tie = e.tiedWith
+          ? `Tied with ${e.tiedWith} other${e.tiedWith === 1 ? '' : 's'} on ${e.pct.toFixed(1)}%`
+          : `Clear of the field on ${e.pct.toFixed(1)}%`;
+        return `
+        <div class="trophy-card ballon-card">
+          <span class="rank-badge ${e.rank === 1 ? 'rank-top' : 'rank-other'}">${e.tiedWith ? 'T' : ''}${e.rank}</span>
+          <div class="comp-label">Ballon d'Or 2026</div>
+          <div class="comp-title">${e.name}</div>
+          <div class="player-note">${e.rank}${e.tiedWith ? ' (tied)' : ''} of ${field.length} in the field</div>
+          <span class="odds-value">${e.pct.toFixed(1)}%</span><span class="price-note">${e.pct.toFixed(1)}&cent;</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${leader.pct ? (e.pct / leader.pct) * 100 : 0}%"></div></div>
+          <div class="rivals-section">
+            <div class="rivals-header">Field</div>
+            <div class="rival-row"><span class="name">${leader.name} (favourite)</span><span class="odds">${leader.pct.toFixed(1)}%</span></div>
+            <div class="rival-row"><span class="name">${tie}</span><span class="odds"></span></div>
+          </div>
+          <a class="market-link" href="${BALLON_URL}" target="_blank">View on Kalshi &rarr;</a>
+        </div>`;
+      }).join('');
+
+      section.hidden = false;
     }
 
     function renderMultiples(probs) {
@@ -1097,7 +1194,8 @@
         .filter(c => probs[c.key] !== undefined)
         .map(c => `<span class="tag">${SHORT[c.key]} ${(probs[c.key]*100).toFixed(1)}%</span>`)
         .join('');
-      const formula = combined === null ? '' : keys.map(k => probs[k].toFixed(2)).join(' × ');
+      const formula = combined === null ? ''
+        : keys.map(k => `${(probs[k]*100).toFixed(1)}%`).join(' × ');
       document.getElementById('pentContent').innerHTML = `
         <div class="pent-label">PL + UCL + FA Cup + Carabao + Shield</div>
         <div class="pent-heading">The Pent</div>
@@ -1161,6 +1259,7 @@
         document.getElementById('trophyGrid').innerHTML = html;
         renderPent(probs);
         renderMultiples(probs);
+        renderBallon(allData[BALLON_SERIES] || []);
         status.className = 'status-text ok';
         status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       } catch (err) {
