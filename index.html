@@ -518,6 +518,10 @@
       height: auto;
       border-radius: 6px;
       border: 1px solid var(--border);
+      /* Long-press has to reach the image, so don't suppress the callout. */
+      -webkit-touch-callout: default;
+      -webkit-user-select: auto;
+      user-select: auto;
     }
 
     .share-actions {
@@ -1500,12 +1504,15 @@
       // Inter is webfont-loaded; drawing before it lands falls back to system.
       if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-      const blob = await canvasToBlob(drawShareCard());
+      const canvas = drawShareCard();
+      const blob = await canvasToBlob(canvas);
       const url = URL.createObjectURL(blob);
       const img = document.getElementById('shareImg');
       if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
       img.dataset.url = url;
-      img.src = url;
+      // A data: URL, not the blob: one — iOS shows its Add to Photos / Copy
+      // menu for the former and frequently offers nothing for the latter.
+      img.src = canvas.toDataURL('image/png');
 
       const file = new File([blob], 'arsenal-pent-2026-27.png', { type: 'image/png' });
       actions.innerHTML = '';
