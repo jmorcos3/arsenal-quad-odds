@@ -449,6 +449,113 @@
       margin-bottom: 0.1rem;
     }
 
+    /* Share sheet */
+    .btn-share .icon { font-size: 0.8rem; }
+    .btn-share[disabled] { opacity: 0.4; pointer-events: none; }
+
+    .share-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(20, 20, 20, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    .share-sheet[hidden] { display: none; }
+
+    .share-panel {
+      background: var(--white);
+      border-radius: 10px;
+      border: 2px solid var(--red);
+      width: min(420px, 100%);
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .share-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .share-title {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--red);
+    }
+
+    .share-close {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      line-height: 1;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 0 0.2rem;
+    }
+
+    .share-close:hover { color: var(--red); }
+
+    .share-preview {
+      padding: 0.9rem;
+      overflow-y: auto;
+      background: #fafafa;
+    }
+
+    .share-preview img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .share-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.8rem 1rem 0;
+    }
+
+    .share-actions a, .share-actions button {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      background: var(--red);
+      color: #fff;
+      border: 2px solid var(--red);
+      border-radius: 4px;
+      padding: 0.55rem 0.8rem;
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .share-actions .ghost { background: var(--white); color: var(--red); }
+
+    .share-hint {
+      font-size: 0.62rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+      padding: 0.6rem 1rem 1rem;
+      margin: 0;
+    }
+
     /* Ballon d'Or */
     .ballon-section[hidden] { display: none; }
 
@@ -824,6 +931,9 @@
       <button class="btn-refresh" id="refreshBtn" onclick="refreshOdds()">
         <span class="icon">&#8635;</span> Refresh
       </button>
+      <button class="btn-refresh btn-share" id="shareBtn" onclick="openShareCard()" disabled>
+        <span class="icon">&#128241;</span> Share card
+      </button>
       <span class="status-text" id="refreshStatus">Loading...</span>
     </div>
 
@@ -917,6 +1027,19 @@
         Not financial advice
       </p>
     </footer>
+  </div>
+
+  <!-- Share sheet: the card is an <img> so iOS long-press offers Add to Photos -->
+  <div class="share-sheet" id="shareSheet" hidden>
+    <div class="share-panel" role="dialog" aria-modal="true" aria-label="Share card">
+      <div class="share-head">
+        <div class="share-title">Share card</div>
+        <button class="share-close" id="shareClose" onclick="closeShareCard()" aria-label="Close">&times;</button>
+      </div>
+      <div class="share-preview"><img id="shareImg" alt="Arsenal 2026-27 trophy odds summary card"></div>
+      <div class="share-actions" id="shareActions"></div>
+      <p class="share-hint" id="shareHint"></p>
+    </div>
   </div>
 
   </div><!-- close position:relative wrapper -->
@@ -1143,7 +1266,7 @@
 
     function renderBallon(markets) {
       const section = document.getElementById('ballonSection');
-      if (!markets.length) { section.hidden = true; return; }
+      if (!markets.length) { section.hidden = true; return []; }
 
       const field = rankField(markets);
       const leader = field[0];
@@ -1151,7 +1274,7 @@
         ARSENAL_SQUAD_KEYS.has(normalizeName(e.name)) && e.rank <= BALLON_TOP_N);
 
       // Nothing to celebrate is the normal case — stay off the page entirely.
-      if (!arsenal.length) { section.hidden = true; return; }
+      if (!arsenal.length) { section.hidden = true; return []; }
 
       document.getElementById('ballonGrid').innerHTML = arsenal.map(e => {
         const tie = e.tiedWith
@@ -1175,6 +1298,7 @@
       }).join('');
 
       section.hidden = false;
+      return arsenal;
     }
 
     function renderMultiples(probs) {
@@ -1206,6 +1330,219 @@
           <span class="formula">${formula}</span>
         </div>`;
     }
+
+    /* ---------- Share card ----------
+       A 4:5 portrait PNG drawn on a canvas. 4:5 rather than 9:16 because an
+       iMessage bubble scales a very tall image down until the numbers are
+       unreadable in the thread; this fills the bubble width and stays legible
+       without a tap. Drawn by hand rather than with a DOM-to-image library so
+       the page keeps its no-dependency, no-build setup. */
+
+    const CARD = { w: 1080, h: 1350, pad: 72 };
+    const INK = '#141414', INK_MID = '#6b6b6b', INK_SOFT = '#9a9a9a';
+    const RED = '#DB0007', RED_TINT = '#fff5f5', RULE = '#ececec';
+
+    // Last successful render, so the card never draws from a half-loaded page.
+    let cardState = null;
+
+    function face(weight, size) {
+      return `${weight} ${size}px Inter, -apple-system, "Helvetica Neue", sans-serif`;
+    }
+
+    // Canvas letter-spacing is too new to rely on across iOS versions, so
+    // tracked labels are drawn a glyph at a time.
+    function trackedText(ctx, text, x, y, spacing) {
+      let cursor = x;
+      for (const ch of text) {
+        ctx.fillText(ch, cursor, y);
+        cursor += ctx.measureText(ch).width + spacing;
+      }
+      return cursor - spacing;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawBar(ctx, x, y, w, pct) {
+      ctx.fillStyle = RULE;
+      roundRect(ctx, x, y, w, 7, 3.5); ctx.fill();
+      if (pct > 0) {
+        ctx.fillStyle = RED;
+        roundRect(ctx, x, y, Math.max(6, w * pct), 7, 3.5); ctx.fill();
+      }
+    }
+
+    function drawShareCard() {
+      const { probs, ballon, stamp } = cardState;
+      const canvas = document.createElement('canvas');
+      canvas.width = CARD.w; canvas.height = CARD.h;
+      const ctx = canvas.getContext('2d');
+      const x0 = CARD.pad, inner = CARD.w - CARD.pad * 2;
+
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, CARD.w, CARD.h);
+      ctx.fillStyle = RED; ctx.fillRect(0, 0, CARD.w, 16);
+      ctx.textBaseline = 'alphabetic';
+
+      ctx.fillStyle = RED; ctx.font = face(800, 26);
+      trackedText(ctx, '2026-27 SEASON', x0, 108, 4);
+
+      ctx.fillStyle = INK; ctx.font = face(900, 116);
+      ctx.fillText('The Pent', x0, 214);
+
+      ctx.fillStyle = INK_MID; ctx.font = face(500, 30);
+      ctx.fillText('Every trophy Arsenal can win this season', x0, 262);
+
+      // Headline number.
+      const pent = product(probs, COMPETITIONS.map(c => c.key));
+      ctx.fillStyle = RED_TINT;
+      roundRect(ctx, x0, 300, inner, 216, 18); ctx.fill();
+      ctx.strokeStyle = RED; ctx.lineWidth = 3;
+      roundRect(ctx, x0, 300, inner, 216, 18); ctx.stroke();
+
+      ctx.fillStyle = RED; ctx.font = face(900, 132);
+      const headline = pent === null ? '—' : `${(pent * 100).toFixed(1)}%`;
+      ctx.fillText(headline, x0 + 44, 442);
+      const headlineW = ctx.measureText(headline).width;
+
+      ctx.fillStyle = INK; ctx.font = face(700, 30);
+      ctx.fillText('to win all five', x0 + 74 + headlineW, 408);
+      ctx.fillStyle = INK_SOFT; ctx.font = face(500, 25);
+      ctx.fillText('PL · UCL · FA Cup · Carabao · Shield', x0 + 74 + headlineW, 448);
+
+      // One row per trophy.
+      ctx.fillStyle = INK_SOFT; ctx.font = face(800, 22);
+      trackedText(ctx, 'EACH TROPHY', x0, 570, 3.5);
+
+      let y = 612;
+      for (const comp of COMPETITIONS) {
+        const p = probs[comp.key];
+        const won = comp.clinched;
+
+        ctx.fillStyle = INK; ctx.font = face(700, 34);
+        ctx.fillText(comp.compName, x0, y);
+
+        const label = won ? 'WON' : (p === undefined ? '—' : `${(p * 100).toFixed(1)}%`);
+        ctx.fillStyle = won ? '#16a34a' : RED;
+        ctx.font = face(900, won ? 32 : 40);
+        ctx.textAlign = 'right';
+        ctx.fillText(label, x0 + inner, y);
+        ctx.textAlign = 'left';
+
+        drawBar(ctx, x0, y + 20, inner, won ? 1 : (p || 0));
+        y += 74;
+      }
+
+      // Multiples.
+      ctx.fillStyle = INK_SOFT; ctx.font = face(800, 22);
+      trackedText(ctx, 'MULTIPLES', x0, y - 8, 3.5);
+
+      const boxW = (inner - 3 * 18) / 4, boxTop = y + 12;
+      MULTIPLES.forEach((m, i) => {
+        const bx = x0 + i * (boxW + 18);
+        ctx.fillStyle = '#fbfbfb';
+        roundRect(ctx, bx, boxTop, boxW, 146, 12); ctx.fill();
+        ctx.strokeStyle = RULE; ctx.lineWidth = 2;
+        roundRect(ctx, bx, boxTop, boxW, 146, 12); ctx.stroke();
+
+        const mid = bx + boxW / 2;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = RED; ctx.font = face(900, 42);
+        ctx.fillText(m.n, mid, boxTop + 50);
+        ctx.fillStyle = INK; ctx.font = face(800, 25);
+        ctx.fillText(m.name.replace('The ', ''), mid, boxTop + 84);
+        ctx.fillStyle = INK; ctx.font = face(900, 38);
+        ctx.fillText(fmtPct(product(probs, m.keys)), mid, boxTop + 126);
+        ctx.textAlign = 'left';
+      });
+
+      // Ballon d'Or, on the same condition as the page section.
+      if (ballon && ballon.length) {
+        const stripY = boxTop + 170;
+        ctx.fillStyle = '#fbfbfb';
+        roundRect(ctx, x0, stripY, inner, 80, 12); ctx.fill();
+        ctx.strokeStyle = RULE; ctx.lineWidth = 2;
+        roundRect(ctx, x0, stripY, inner, 80, 12); ctx.stroke();
+
+        ctx.fillStyle = RED; ctx.font = face(800, 20);
+        trackedText(ctx, "BALLON D'OR TOP 20", x0 + 26, stripY + 32, 3);
+        ctx.fillStyle = INK; ctx.font = face(700, 25);
+        ctx.fillText(ballon.map(e =>
+          `${e.name} · ${e.tiedWith ? 'T' : ''}${e.rank}`).join('   ·   '), x0 + 26, stripY + 62);
+      }
+
+      ctx.fillStyle = INK_SOFT; ctx.font = face(500, 23);
+      ctx.fillText(`Kalshi mid-prices · ${stamp}`, x0, CARD.h - 52);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = RED; ctx.font = face(800, 23);
+      ctx.fillText('COYG', x0 + inner, CARD.h - 52);
+      ctx.textAlign = 'left';
+
+      return canvas;
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    async function openShareCard() {
+      if (!cardState) return;
+      const sheet = document.getElementById('shareSheet');
+      const actions = document.getElementById('shareActions');
+      const hint = document.getElementById('shareHint');
+
+      // Inter is webfont-loaded; drawing before it lands falls back to system.
+      if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+      const blob = await canvasToBlob(drawShareCard());
+      const url = URL.createObjectURL(blob);
+      const img = document.getElementById('shareImg');
+      if (img.dataset.url) URL.revokeObjectURL(img.dataset.url);
+      img.dataset.url = url;
+      img.src = url;
+
+      const file = new File([blob], 'arsenal-pent-2026-27.png', { type: 'image/png' });
+      actions.innerHTML = '';
+
+      // iOS routes this to the share sheet, so Messages is one tap away.
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        const share = document.createElement('button');
+        share.textContent = 'Share to Messages';
+        share.onclick = () => navigator.share({ files: [file] }).catch(() => {});
+        actions.appendChild(share);
+      }
+
+      const save = document.createElement('a');
+      save.href = url;
+      save.download = 'arsenal-pent-2026-27.png';
+      save.textContent = 'Save PNG';
+      save.className = actions.children.length ? 'ghost' : '';
+      actions.appendChild(save);
+
+      hint.textContent = 'On iPhone, long-press the card and choose Add to Photos, '
+        + 'or use Share to send it straight to a thread. It is a 1080 × 1350 PNG, '
+        + 'sized to fill an iMessage bubble without being cropped.';
+
+      sheet.hidden = false;
+    }
+
+    function closeShareCard() {
+      document.getElementById('shareSheet').hidden = true;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeShareCard();
+    });
+
+    document.getElementById('shareSheet').addEventListener('click', e => {
+      if (e.target.id === 'shareSheet') closeShareCard();
+    });
 
     // Shown while the markets load, and left in place if the fetch fails, so the
     // Shield still reads as won rather than as a blank page.
@@ -1259,7 +1596,13 @@
         document.getElementById('trophyGrid').innerHTML = html;
         renderPent(probs);
         renderMultiples(probs);
-        renderBallon(allData[BALLON_SERIES] || []);
+        const ballon = renderBallon(allData[BALLON_SERIES] || []);
+        cardState = {
+          probs,
+          ballon,
+          stamp: new Date().toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
+        };
+        document.getElementById('shareBtn').disabled = false;
         status.className = 'status-text ok';
         status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       } catch (err) {
