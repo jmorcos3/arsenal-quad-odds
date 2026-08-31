@@ -6,6 +6,21 @@ const ALLOWED_ORIGINS = [
   'https://arsenal-pent.netlify.app',
 ];
 const CACHE_TTL = 120;
+// An explicit refresh may bypass the cache, but not more often than this — the
+// button must not become a way to hammer Kalshi from a single tab.
+const MIN_REFETCH_AGE = 15;
+
+// Age of a cached batch body, from the stamp the fetch path writes into it.
+// A body from before that stamp existed reads as infinitely old, so the first
+// explicit refresh after a deploy refetches.
+function ageSeconds(body) {
+  try {
+    const stamp = Date.parse(JSON.parse(body).fetchedAt);
+    return Number.isNaN(stamp) ? Infinity : (Date.now() - stamp) / 1000;
+  } catch {
+    return Infinity;
+  }
+}
 
 const SERIES = ['KXPREMIERLEAGUE', 'KXUCL', 'KXFACUP', 'KXEFLCUP', 'KXBALLONDOR'];
 
@@ -46,24 +61,30 @@ export default {
     if (path === '/batch') {
       const cacheKey = new Request('https://cache.internal/batch-all', { method: 'GET' });
       const cache = caches.default;
-      let cached = await cache.match(cacheKey);
+      const cached = await cache.match(cacheKey);
+      // ?fresh=1 is the page saying a person pressed Refresh, so re-read Kalshi
+      // rather than replaying a body that can be two minutes old.
+      const wantsFresh = url.searchParams.get('fresh') === '1';
 
       if (cached) {
         const body = await cached.text();
-        return new Response(body, {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': `public, max-age=${CACHE_TTL}`,
-            'X-Cache': 'HIT',
-            ...corsHeaders(origin),
-          },
-        });
+        if (!wantsFresh || ageSeconds(body) < MIN_REFETCH_AGE) {
+          return new Response(body, {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': `public, max-age=${CACHE_TTL}`,
+              'X-Cache': 'HIT',
+              ...corsHeaders(origin),
+            },
+          });
+        }
       }
 
       try {
         // Fetch all series sequentially with small delays to avoid rate limits
-        const results = {};
+        // Series tickers are all KX-prefixed, so fetchedAt cannot collide with one.
+        const results = { fetchedAt: new Date().toISOString() };
         for (let i = 0; i < SERIES.length; i++) {
           if (i > 0) await new Promise(r => setTimeout(r, 300));
           const data = await fetchSeries(SERIES[i]);

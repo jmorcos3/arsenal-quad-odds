@@ -932,7 +932,7 @@
 
     <!-- Refresh bar -->
     <div class="refresh-row">
-      <button class="btn-refresh" id="refreshBtn" onclick="refreshOdds()">
+      <button class="btn-refresh" id="refreshBtn" onclick="refreshOdds(true)">
         <span class="icon">&#8635;</span> Refresh
       </button>
       <button class="btn-refresh btn-share" id="shareBtn" onclick="openShareCard()" disabled>
@@ -1178,10 +1178,11 @@
       return p === null ? '—' : `${(p * 100).toFixed(1)}%`;
     }
 
-    async function fetchAllMarkets(retries = 3) {
+    async function fetchAllMarkets({ fresh = false } = {}, retries = 3) {
+      const url = `${API_BASE}/batch${fresh ? '?fresh=1' : ''}`;
       for (let i = 0; i < retries; i++) {
         if (i > 0) await new Promise(r => setTimeout(r, 2000 * (i + 1)));
-        const r = await fetch(`${API_BASE}/batch`);
+        const r = await fetch(url, { cache: 'no-store' });
         if (r.status === 429) { console.warn(`429, retry ${i+1}`); continue; }
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return await r.json();
@@ -1569,7 +1570,9 @@
       renderMultiples(probs);
     }
 
-    async function refreshOdds() {
+    // userInitiated marks a press of Refresh, which asks the Worker to re-read
+    // Kalshi instead of replaying its cache. The load on open takes the cache.
+    async function refreshOdds(userInitiated = false) {
       const btn = document.getElementById('refreshBtn');
       const status = document.getElementById('refreshStatus');
       btn.classList.add('loading');
@@ -1577,8 +1580,8 @@
       status.textContent = 'Fetching...';
       renderFallback();
       try {
-        status.textContent = 'Fetching all markets...';
-        const allData = await fetchAllMarkets();
+        status.textContent = userInitiated ? 'Re-reading Kalshi...' : 'Fetching all markets...';
+        const allData = await fetchAllMarkets({ fresh: userInitiated });
         const probs = {};
         let html = '';
         for (const comp of COMPETITIONS) {
@@ -1604,14 +1607,17 @@
         renderPent(probs);
         renderMultiples(probs);
         const ballon = renderBallon(allData[BALLON_SERIES] || []);
+        const readAt = allData.fetchedAt ? new Date(allData.fetchedAt) : new Date();
         cardState = {
           probs,
           ballon,
-          stamp: new Date().toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
+          stamp: readAt.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
         };
         document.getElementById('shareBtn').disabled = false;
         status.className = 'status-text ok';
-        status.textContent = `Updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+        const age = Math.round((Date.now() - readAt.getTime()) / 1000);
+        const clock = readAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        status.textContent = age > 45 ? `Kalshi read ${clock} (${age}s ago)` : `Kalshi read ${clock}`;
       } catch (err) {
         console.error(err);
         status.className = 'status-text err';
