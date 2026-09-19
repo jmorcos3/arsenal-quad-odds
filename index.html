@@ -1385,7 +1385,7 @@
     }
 
     function drawShareCard() {
-      const { probs, ballon, stamp } = cardState;
+      const { probs, rivals = {}, ballon, stamp } = cardState;
       const canvas = document.createElement('canvas');
       canvas.width = CARD.w; canvas.height = CARD.h;
       const ctx = canvas.getContext('2d');
@@ -1396,42 +1396,53 @@
       ctx.textBaseline = 'alphabetic';
 
       ctx.fillStyle = RED; ctx.font = face(800, 26);
-      trackedText(ctx, '2026-27 SEASON', x0, 108, 4);
+      trackedText(ctx, '2026-27 SEASON', x0, 100, 4);
 
       ctx.fillStyle = INK; ctx.font = face(900, 116);
-      ctx.fillText('The Pent', x0, 214);
+      ctx.fillText('The Pent', x0, 202);
 
       ctx.fillStyle = INK_MID; ctx.font = face(500, 30);
-      ctx.fillText('Every trophy Arsenal can win this season', x0, 262);
+      ctx.fillText('Every trophy Arsenal can win this season', x0, 248);
 
       // Headline number.
       const pent = product(probs, COMPETITIONS.map(c => c.key));
       ctx.fillStyle = RED_TINT;
-      roundRect(ctx, x0, 300, inner, 216, 18); ctx.fill();
+      roundRect(ctx, x0, 282, inner, 190, 18); ctx.fill();
       ctx.strokeStyle = RED; ctx.lineWidth = 3;
-      roundRect(ctx, x0, 300, inner, 216, 18); ctx.stroke();
+      roundRect(ctx, x0, 282, inner, 190, 18); ctx.stroke();
 
       ctx.fillStyle = RED; ctx.font = face(900, 132);
       const headline = pent === null ? '—' : `${(pent * 100).toFixed(1)}%`;
-      ctx.fillText(headline, x0 + 44, 442);
+      ctx.fillText(headline, x0 + 44, 424);
       const headlineW = ctx.measureText(headline).width;
 
       ctx.fillStyle = INK; ctx.font = face(700, 30);
-      ctx.fillText('to win all five', x0 + 74 + headlineW, 408);
+      ctx.fillText('to win all five', x0 + 74 + headlineW, 390);
       ctx.fillStyle = INK_SOFT; ctx.font = face(500, 25);
-      ctx.fillText('PL · UCL · FA Cup · Carabao · Shield', x0 + 74 + headlineW, 448);
+      ctx.fillText('PL · UCL · FA Cup · Carabao · Shield', x0 + 74 + headlineW, 430);
 
       // One row per trophy.
       ctx.fillStyle = INK_SOFT; ctx.font = face(800, 22);
-      trackedText(ctx, 'EACH TROPHY', x0, 570, 3.5);
+      trackedText(ctx, 'EACH TROPHY', x0, 522, 3.5);
 
-      let y = 612;
+      let y = 560;
       for (const comp of COMPETITIONS) {
         const p = probs[comp.key];
         const won = comp.clinched;
 
         ctx.fillStyle = INK; ctx.font = face(700, 34);
         ctx.fillText(comp.compName, x0, y);
+
+        // Who's nearest, in a lighter hand under the competition name.
+        const rival = rivals[comp.key];
+        const context = won ? 'Already in the cabinet'
+          : !rival ? ''
+          : rival.arsenalTop ? `2nd · ${rival.name} ${rival.pct.toFixed(1)}%`
+          : `Favourite · ${rival.name} ${rival.pct.toFixed(1)}%`;
+        if (context) {
+          ctx.fillStyle = INK_SOFT; ctx.font = face(400, 22);
+          ctx.fillText(context, x0, y + 27);
+        }
 
         const label = won ? 'WON' : (p === undefined ? '—' : `${(p * 100).toFixed(1)}%`);
         ctx.fillStyle = won ? '#16a34a' : RED;
@@ -1440,8 +1451,8 @@
         ctx.fillText(label, x0 + inner, y);
         ctx.textAlign = 'left';
 
-        drawBar(ctx, x0, y + 20, inner, won ? 1 : (p || 0));
-        y += 74;
+        drawBar(ctx, x0, y + 40, inner, won ? 1 : (p || 0));
+        y += 86;
       }
 
       // Multiples.
@@ -1452,34 +1463,34 @@
       MULTIPLES.forEach((m, i) => {
         const bx = x0 + i * (boxW + 18);
         ctx.fillStyle = '#fbfbfb';
-        roundRect(ctx, bx, boxTop, boxW, 146, 12); ctx.fill();
+        roundRect(ctx, bx, boxTop, boxW, 136, 12); ctx.fill();
         ctx.strokeStyle = RULE; ctx.lineWidth = 2;
-        roundRect(ctx, bx, boxTop, boxW, 146, 12); ctx.stroke();
+        roundRect(ctx, bx, boxTop, boxW, 136, 12); ctx.stroke();
 
         const mid = bx + boxW / 2;
         ctx.textAlign = 'center';
         ctx.fillStyle = RED; ctx.font = face(900, 42);
-        ctx.fillText(m.n, mid, boxTop + 50);
+        ctx.fillText(m.n, mid, boxTop + 48);
         ctx.fillStyle = INK; ctx.font = face(800, 25);
-        ctx.fillText(m.name.replace('The ', ''), mid, boxTop + 84);
+        ctx.fillText(m.name.replace('The ', ''), mid, boxTop + 80);
         ctx.fillStyle = INK; ctx.font = face(900, 38);
-        ctx.fillText(fmtPct(product(probs, m.keys)), mid, boxTop + 126);
+        ctx.fillText(fmtPct(product(probs, m.keys)), mid, boxTop + 120);
         ctx.textAlign = 'left';
       });
 
       // Ballon d'Or, on the same condition as the page section.
       if (ballon && ballon.length) {
-        const stripY = boxTop + 170;
+        const stripY = boxTop + 160;
         ctx.fillStyle = '#fbfbfb';
-        roundRect(ctx, x0, stripY, inner, 80, 12); ctx.fill();
+        roundRect(ctx, x0, stripY, inner, 76, 12); ctx.fill();
         ctx.strokeStyle = RULE; ctx.lineWidth = 2;
-        roundRect(ctx, x0, stripY, inner, 80, 12); ctx.stroke();
+        roundRect(ctx, x0, stripY, inner, 76, 12); ctx.stroke();
 
         ctx.fillStyle = RED; ctx.font = face(800, 20);
-        trackedText(ctx, "BALLON D'OR TOP 20", x0 + 26, stripY + 32, 3);
+        trackedText(ctx, "BALLON D'OR TOP 20", x0 + 26, stripY + 30, 3);
         ctx.fillStyle = INK; ctx.font = face(700, 25);
         ctx.fillText(ballon.map(e =>
-          `${e.name} · ${e.tiedWith ? 'T' : ''}${e.rank}`).join('   ·   '), x0 + 26, stripY + 62);
+          `${e.name} · ${e.tiedWith ? 'T' : ''}${e.rank}`).join('   ·   '), x0 + 26, stripY + 58);
       }
 
       ctx.fillStyle = INK_SOFT; ctx.font = face(500, 23);
@@ -1583,6 +1594,9 @@
         status.textContent = userInitiated ? 'Re-reading Kalshi...' : 'Fetching all markets...';
         const allData = await fetchAllMarkets({ fresh: userInitiated });
         const probs = {};
+        // Nearest rival per competition, for the share card: the 2nd-placed
+        // side when Arsenal lead, the favourite when they don't.
+        const rivals = {};
         let html = '';
         for (const comp of COMPETITIONS) {
           if (comp.clinched) {
@@ -1601,6 +1615,9 @@
             .sort((a, b) => b._m - a._m)
             .slice(0, comp.topN);
           probs[comp.key] = midPrice(ars) / 100;
+          rivals[comp.key] = others.length
+            ? { name: getTeamName(others[0]), pct: others[0]._m, arsenalTop: midPrice(ars) >= others[0]._m }
+            : null;
           html += renderCard(comp, ars, others);
         }
         document.getElementById('trophyGrid').innerHTML = html;
@@ -1610,6 +1627,7 @@
         const readAt = allData.fetchedAt ? new Date(allData.fetchedAt) : new Date();
         cardState = {
           probs,
+          rivals,
           ballon,
           stamp: readAt.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
         };
