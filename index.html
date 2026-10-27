@@ -6,17 +6,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="Live Arsenal Pent odds from Kalshi prediction markets. Premier League, Champions League, FA Cup, Carabao Cup and the Community Shield, priced in real time.">
+  <meta name="description" content="Live Arsenal Quad odds from Kalshi prediction markets: the Premier League, Champions League and FA Cup still to play for, with the Community Shield already won.">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Arsenal Pent Tracker">
-  <meta property="og:description" content="Can Arsenal win all five? Live Kalshi odds for the Premier League, Champions League, FA Cup, Carabao Cup and Community Shield.">
+  <meta property="og:title" content="Arsenal Quad Tracker">
+  <meta property="og:description" content="Can Arsenal win all four? Live Kalshi odds for the Premier League, Champions League and FA Cup, with the Community Shield already won.">
   <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <meta property="og:url" content="https://arsenal-quad.netlify.app">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Arsenal Pent Tracker">
-  <meta name="twitter:description" content="Can Arsenal win all five? Live Kalshi odds for every trophy still on the table.">
+  <meta name="twitter:title" content="Arsenal Quad Tracker">
+  <meta name="twitter:description" content="Can Arsenal win all four? Live Kalshi odds for every trophy still on the table.">
   <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
-  <title>Arsenal Pent Tracker</title>
+  <title>Arsenal Quad Tracker</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -268,6 +268,12 @@
       background: var(--green);
       color: #fff;
     }
+
+    /* Knocked out: still listed so the season reads honestly, but quiet. */
+    .rank-out { border: 1px solid var(--border); color: var(--text-light); background: var(--white); }
+    .trophy-card.is-out .odds-value, .trophy-card.is-out .comp-title { color: var(--text-light); }
+    .multi-card.is-out { background: #f7f7f7; }
+    .multi-card.is-out .multi-n, .multi-card.is-out .multi-name { color: var(--text-light); }
 
     /* Competitors */
     .rivals-section {
@@ -882,7 +888,7 @@
     <header>
       <div class="header-left">
         <div class="season-badge">2026-27 Season</div>
-        <h1>Arsenal <span class="accent">Pent Tracker</span></h1>
+        <h1>Arsenal <span class="accent">Quad Tracker</span></h1>
         <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
       </div>
       <!-- Cartoon sketch: player dribbling -->
@@ -945,9 +951,9 @@
     <div class="section-title">Individual Trophy Odds</div>
     <div class="trophy-grid" id="trophyGrid"></div>
 
-    <!-- Pent -->
+    <!-- Headline multiple: every trophy still winnable -->
     <div class="pent-section">
-      <div class="section-title">The Pent</div>
+      <div class="section-title" id="heroTitle">The Quad</div>
       <div class="pent-card" id="pentCard">
         <div class="pent-layout">
           <div class="pent-body" id="pentContent"></div>
@@ -1015,10 +1021,11 @@
       <h3>How these are calculated</h3>
       <p>
         Individual probabilities come from Kalshi market mid-prices (avg of best bid and ask, in cents).
-        The Community Shield is already won, so it's fixed at 100% &mdash; which is why the Pent and the
-        Quad price identically. Every multiple assumes the competitions are independent and multiplies
-        them, which is a simplification: the same squad plays all five, so fixture congestion and
-        fatigue create real correlations. Ballon d'Or Watch appears only when an Arsenal player
+        The Community Shield is already won, so it's fixed at 100% &mdash; which is why the Quad and the
+        Treble price identically. The Carabao Cup went on 27 October, which takes the Pent off the table.
+        Every multiple assumes the competitions are independent and multiplies them, which is a
+        simplification: the same squad plays all of them, so fixture congestion and fatigue create real
+        correlations. Ballon d'Or Watch appears only when an Arsenal player
         prices inside the top 20 of Kalshi's field; rank is by mid-price with ties sharing the best
         rank, so a long tail of players on the same cent all hold it rather than being split
         alphabetically.
@@ -1086,7 +1093,10 @@
         compName: 'Carabao Cup',
         title: 'Carabao Cup Winners',
         kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-27',
-        topN: 2
+        topN: 2,
+        // Out of the competition: kept on the page, priced at zero.
+        eliminated: true,
+        outNote: 'Knocked out 27 Oct'
       },
       {
         // No Kalshi market: the Shield is already in the cabinet, so it is a fixed 100%.
@@ -1101,10 +1111,19 @@
 
     const MULTIPLES = [
       { n: '5', name: 'The Pent',   keys: ['pl','ucl','fa','efl','shield'], c: 'var(--red)' },
-      { n: '4', name: 'The Quad',   keys: ['pl','ucl','fa','efl'],          c: 'var(--red)' },
+      { n: '4', name: 'The Quad',   keys: ['pl','ucl','fa','shield'],       c: 'var(--red)' },
       { n: '3', name: 'The Treble', keys: ['pl','ucl','fa'],                c: 'var(--amber)' },
       { n: '2', name: 'The Double', keys: ['pl','ucl'],                     c: 'var(--green)' }
     ];
+
+    // The headline multiple is every trophy still winnable, so a knockout
+    // renames it (Pent, then Quad, ...) without touching the layout.
+    const LIVE = COMPETITIONS.filter(c => !c.eliminated);
+    const HERO_NAME = { 5: 'The Pent', 4: 'The Quad', 3: 'The Treble', 2: 'The Double' }[LIVE.length]
+      || `${LIVE.length} trophies`;
+    const COUNT_WORD = { 5: 'five', 4: 'four', 3: 'three', 2: 'two' }[LIVE.length] || String(LIVE.length);
+    // A multiple with a knocked-out leg is gone, not merely unlikely.
+    const isOut = keys => keys.some(k => (COMPETITIONS.find(c => c.key === k) || {}).eliminated);
 
     const BALLON_SERIES = 'KXBALLONDOR';
     const BALLON_URL = 'https://kalshi.com/markets/kxballondor';
@@ -1149,11 +1168,16 @@
       return TEAM_NAMES[code] || market.yes_sub_title || code;
     }
 
+    // A lone ask is only an upper bound on the price. At 1-2c that is close
+    // enough to be the price (the long tail of any field); far from zero it says
+    // nothing, and a freshly listed market quoting 0 / 95c is not 95% likely.
+    const MAX_LONE_ASK = 5;
+
     function midPrice(m) {
       const b = m.yes_bid_dollars !== undefined ? parseFloat(m.yes_bid_dollars) * 100 : (m.yes_bid || 0);
       const a = m.yes_ask_dollars !== undefined ? parseFloat(m.yes_ask_dollars) * 100 : (m.yes_ask || 0);
       if (!b && !a) return 0;
-      if (!b) return a;
+      if (!b) return a <= MAX_LONE_ASK ? a : 0;
       if (!a) return b;
       return (b + a) / 2;
     }
@@ -1201,6 +1225,21 @@
           <div class="rivals-section">
             <div class="rivals-header">Result</div>
             <div class="rival-row"><span class="name">Arsenal &mdash; Winners</span><span class="odds">Won</span></div>
+          </div>
+        </div>`;
+    }
+
+    function renderEliminatedCard(comp) {
+      return `
+        <div class="trophy-card is-out">
+          <span class="rank-badge rank-out">Out</span>
+          <div class="comp-label">${comp.compName}</div>
+          <div class="comp-title">${comp.title}</div>
+          <span class="odds-value">0.0%</span><span class="price-note">gone</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0%"></div></div>
+          <div class="rivals-section">
+            <div class="rivals-header">Result</div>
+            <div class="rival-row"><span class="name">Arsenal &mdash; ${comp.outNote || 'knocked out'}</span><span class="odds">Out</span></div>
           </div>
         </div>`;
     }
@@ -1261,6 +1300,7 @@
     function rankField(markets) {
       const priced = markets
         .map(m => ({ market: m, pct: midPrice(m), name: m.yes_sub_title || getTeamName(m) }))
+        .filter(e => e.pct > 0)
         .sort((a, b) => b.pct - a.pct);
       return priced.map(entry => ({
         ...entry,
@@ -1307,28 +1347,38 @@
     }
 
     function renderMultiples(probs) {
-      document.getElementById('multiplesGrid').innerHTML = MULTIPLES.map(m => `
-        <div class="multi-card">
+      document.getElementById('multiplesGrid').innerHTML = MULTIPLES.map(m => {
+        const out = isOut(m.keys);
+        return `
+        <div class="multi-card${out ? ' is-out' : ''}">
           <div class="multi-n">${m.n}</div>
           <div class="multi-name">${m.name}</div>
           <div class="multi-desc">${m.keys.map(k => SHORT[k]).join(' + ')}</div>
-          <div class="multi-pct" style="color:${m.c}">${fmtPct(product(probs, m.keys))}</div>
-        </div>`).join('');
+          <div class="multi-pct" style="color:${out ? 'var(--text-light)' : m.c}">${out ? 'Out' : fmtPct(product(probs, m.keys))}</div>
+        </div>`;
+      }).join('');
     }
 
-    function renderPent(probs) {
-      const keys = COMPETITIONS.map(c => c.key);
+    function renderHero(probs) {
+      const keys = LIVE.map(c => c.key);
       const combined = product(probs, keys);
-      const tags = COMPETITIONS
+      const tags = LIVE
         .filter(c => probs[c.key] !== undefined)
         .map(c => `<span class="tag">${SHORT[c.key]} ${(probs[c.key]*100).toFixed(1)}%</span>`)
         .join('');
       const formula = combined === null ? ''
         : keys.map(k => `${(probs[k]*100).toFixed(1)}%`).join(' × ');
+      const status = [
+        ...COMPETITIONS.filter(c => c.clinched).map(c => `the ${c.compName} is already in the cabinet`),
+        ...COMPETITIONS.filter(c => c.eliminated).map(c => `the ${c.compName} is gone`),
+      ].join(' and ');
+      const desc = `Win all ${COUNT_WORD} trophies Arsenal can still lift in 2026-27.`
+        + (status ? ` ${status.charAt(0).toUpperCase()}${status.slice(1)}.` : '');
+      document.getElementById('heroTitle').textContent = HERO_NAME;
       document.getElementById('pentContent').innerHTML = `
-        <div class="pent-label">PL + UCL + FA Cup + Carabao + Shield</div>
-        <div class="pent-heading">The Pent</div>
-        <div class="pent-desc">Win all five trophies Arsenal can lift in 2026-27. The Community Shield is already in the cabinet &mdash; the other four are still live.</div>
+        <div class="pent-label">${LIVE.map(c => SHORT[c.key]).join(' + ')}</div>
+        <div class="pent-heading">${HERO_NAME}</div>
+        <div class="pent-desc">${desc}</div>
         <div class="trophy-tags">${tags}</div>
         <div class="pent-result">
           <span class="big-pct">${fmtPct(combined)}</span>
@@ -1399,13 +1449,13 @@
       trackedText(ctx, '2026-27 SEASON', x0, 100, 4);
 
       ctx.fillStyle = INK; ctx.font = face(900, 116);
-      ctx.fillText('The Pent', x0, 202);
+      ctx.fillText(HERO_NAME, x0, 202);
 
       ctx.fillStyle = INK_MID; ctx.font = face(500, 30);
-      ctx.fillText('Every trophy Arsenal can win this season', x0, 248);
+      ctx.fillText('Every trophy Arsenal can still win this season', x0, 248);
 
       // Headline number.
-      const pent = product(probs, COMPETITIONS.map(c => c.key));
+      const pent = product(probs, LIVE.map(c => c.key));
       ctx.fillStyle = RED_TINT;
       roundRect(ctx, x0, 282, inner, 190, 18); ctx.fill();
       ctx.strokeStyle = RED; ctx.lineWidth = 3;
@@ -1417,9 +1467,9 @@
       const headlineW = ctx.measureText(headline).width;
 
       ctx.fillStyle = INK; ctx.font = face(700, 30);
-      ctx.fillText('to win all five', x0 + 74 + headlineW, 390);
+      ctx.fillText(`to win all ${COUNT_WORD}`, x0 + 74 + headlineW, 390);
       ctx.fillStyle = INK_SOFT; ctx.font = face(500, 25);
-      ctx.fillText('PL · UCL · FA Cup · Carabao · Shield', x0 + 74 + headlineW, 430);
+      ctx.fillText(LIVE.map(c => SHORT[c.key]).join(' · '), x0 + 74 + headlineW, 430);
 
       // One row per trophy.
       ctx.fillStyle = INK_SOFT; ctx.font = face(800, 22);
@@ -1429,13 +1479,15 @@
       for (const comp of COMPETITIONS) {
         const p = probs[comp.key];
         const won = comp.clinched;
+        const out = comp.eliminated;
 
-        ctx.fillStyle = INK; ctx.font = face(700, 34);
+        ctx.fillStyle = out ? INK_MID : INK; ctx.font = face(700, 34);
         ctx.fillText(comp.compName, x0, y);
 
         // Who's nearest, in a lighter hand under the competition name.
         const rival = rivals[comp.key];
         const context = won ? 'Already in the cabinet'
+          : out ? (comp.outNote || 'Knocked out')
           : !rival ? ''
           : rival.arsenalTop ? `2nd · ${rival.name} ${rival.pct.toFixed(1)}%`
           : `Favourite · ${rival.name} ${rival.pct.toFixed(1)}%`;
@@ -1444,9 +1496,9 @@
           ctx.fillText(context, x0, y + 27);
         }
 
-        const label = won ? 'WON' : (p === undefined ? '—' : `${(p * 100).toFixed(1)}%`);
-        ctx.fillStyle = won ? '#16a34a' : RED;
-        ctx.font = face(900, won ? 32 : 40);
+        const label = won ? 'WON' : out ? 'OUT' : (p === undefined ? '—' : `${(p * 100).toFixed(1)}%`);
+        ctx.fillStyle = won ? '#16a34a' : out ? INK_SOFT : RED;
+        ctx.font = face(900, won || out ? 32 : 40);
         ctx.textAlign = 'right';
         ctx.fillText(label, x0 + inner, y);
         ctx.textAlign = 'left';
@@ -1462,19 +1514,20 @@
       const boxW = (inner - 3 * 18) / 4, boxTop = y + 12;
       MULTIPLES.forEach((m, i) => {
         const bx = x0 + i * (boxW + 18);
-        ctx.fillStyle = '#fbfbfb';
+        const out = isOut(m.keys);
+        ctx.fillStyle = out ? '#f4f4f4' : '#fbfbfb';
         roundRect(ctx, bx, boxTop, boxW, 136, 12); ctx.fill();
         ctx.strokeStyle = RULE; ctx.lineWidth = 2;
         roundRect(ctx, bx, boxTop, boxW, 136, 12); ctx.stroke();
 
         const mid = bx + boxW / 2;
         ctx.textAlign = 'center';
-        ctx.fillStyle = RED; ctx.font = face(900, 42);
+        ctx.fillStyle = out ? INK_SOFT : RED; ctx.font = face(900, 42);
         ctx.fillText(m.n, mid, boxTop + 48);
-        ctx.fillStyle = INK; ctx.font = face(800, 25);
+        ctx.fillStyle = out ? INK_SOFT : INK; ctx.font = face(800, 25);
         ctx.fillText(m.name.replace('The ', ''), mid, boxTop + 80);
-        ctx.fillStyle = INK; ctx.font = face(900, 38);
-        ctx.fillText(fmtPct(product(probs, m.keys)), mid, boxTop + 120);
+        ctx.fillStyle = out ? INK_SOFT : INK; ctx.font = face(900, 38);
+        ctx.fillText(out ? 'Out' : fmtPct(product(probs, m.keys)), mid, boxTop + 120);
         ctx.textAlign = 'left';
       });
 
@@ -1526,7 +1579,7 @@
       // menu for the former and frequently offers nothing for the latter.
       img.src = canvas.toDataURL('image/png');
 
-      const file = new File([blob], 'arsenal-pent-2026-27.png', { type: 'image/png' });
+      const file = new File([blob], 'arsenal-quad-2026-27.png', { type: 'image/png' });
       actions.innerHTML = '';
 
       // iOS routes this to the share sheet, so Messages is one tap away.
@@ -1539,7 +1592,7 @@
 
       const save = document.createElement('a');
       save.href = url;
-      save.download = 'arsenal-pent-2026-27.png';
+      save.download = 'arsenal-quad-2026-27.png';
       save.textContent = 'Save PNG';
       save.className = actions.children.length ? 'ghost' : '';
       actions.appendChild(save);
@@ -1572,12 +1625,15 @@
         if (comp.clinched) {
           probs[comp.key] = 1;
           html += renderClinchedCard(comp);
+        } else if (comp.eliminated) {
+          probs[comp.key] = 0;
+          html += renderEliminatedCard(comp);
         } else {
           html += renderPendingCard(comp);
         }
       }
       document.getElementById('trophyGrid').innerHTML = html;
-      renderPent(probs);
+      renderHero(probs);
       renderMultiples(probs);
     }
 
@@ -1604,6 +1660,11 @@
             html += renderClinchedCard(comp);
             continue;
           }
+          if (comp.eliminated) {
+            probs[comp.key] = 0;
+            html += renderEliminatedCard(comp);
+            continue;
+          }
           const markets = allData[comp.series] || [];
           const ars = findArsenal(markets, comp);
           if (!ars) { html += renderPendingCard(comp); continue; }
@@ -1621,7 +1682,7 @@
           html += renderCard(comp, ars, others);
         }
         document.getElementById('trophyGrid').innerHTML = html;
-        renderPent(probs);
+        renderHero(probs);
         renderMultiples(probs);
         const ballon = renderBallon(allData[BALLON_SERIES] || []);
         const readAt = allData.fetchedAt ? new Date(allData.fetchedAt) : new Date();
