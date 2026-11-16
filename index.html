@@ -25,8 +25,6 @@
   <style>
     :root {
       --red: #DB0007;
-      --red-dark: #b30006;
-      --red-light: #ff2a2a;
       --white: #ffffff;
       --bg: #ffffff;
       --card-bg: #ffffff;
@@ -34,7 +32,6 @@
       --text-mid: #666;
       --text-light: #999;
       --border: #e8e8e8;
-      --border-strong: #DB0007;
       --green: #16a34a;
       --amber: #d97706;
       --red-tint: #fff5f5;
@@ -322,10 +319,10 @@
 
     .trophy-card .market-link:hover { color: var(--red); }
 
-    /* Pent card */
-    .pent-section { margin-bottom: 2.5rem; }
+    /* Headline card */
+    .hero-section { margin-bottom: 2.5rem; }
 
-    .pent-card {
+    .hero-card {
       background: var(--white);
       border: 2px solid var(--red);
       border-radius: 6px;
@@ -334,15 +331,15 @@
       overflow: hidden;
     }
 
-    .pent-card .pent-layout {
+    .hero-card .hero-layout {
       display: flex;
       align-items: center;
       gap: 2rem;
     }
 
-    .pent-card .pent-body { flex: 1; }
+    .hero-card .hero-body { flex: 1; }
 
-    .pent-card .pent-label {
+    .hero-card .hero-label {
       font-size: 0.55rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -351,14 +348,14 @@
       margin-bottom: 0.15rem;
     }
 
-    .pent-card .pent-heading {
+    .hero-card .hero-heading {
       font-size: 1.4rem;
       font-weight: 900;
       margin-bottom: 0.3rem;
       letter-spacing: -0.02em;
     }
 
-    .pent-card .pent-desc {
+    .hero-card .hero-desc {
       font-size: 0.72rem;
       color: var(--text-mid);
       line-height: 1.55;
@@ -382,27 +379,27 @@
       background: var(--red-tint);
     }
 
-    .pent-result {
+    .hero-result {
       display: flex;
       align-items: baseline;
       gap: 0.6rem;
     }
 
-    .pent-result .big-pct {
+    .hero-result .big-pct {
       font-size: 2.8rem;
       font-weight: 900;
       color: var(--red);
       letter-spacing: -0.02em;
     }
 
-    .pent-result .formula {
+    .hero-result .formula {
       font-size: 0.62rem;
       color: var(--text-light);
       font-weight: 500;
     }
 
-    /* Sketch decoration in the pent card */
-    .pent-sketch-wrap {
+    /* Sketch decoration in the headline card */
+    .hero-sketch {
       flex-shrink: 0;
       opacity: 0.6;
     }
@@ -660,10 +657,10 @@
       .multi-card .multi-name { font-size: 0.7rem; }
       .multi-card .multi-desc { font-size: 0.54rem; }
       .multi-card .multi-pct { font-size: 1.15rem; }
-      .pent-card { padding: 1.2rem; }
-      .pent-card .pent-heading { font-size: 1.15rem; }
-      .pent-result .big-pct { font-size: 2.1rem; }
-      .pent-sketch-wrap { display: none; }
+      .hero-card { padding: 1.2rem; }
+      .hero-card .hero-heading { font-size: 1.15rem; }
+      .hero-result .big-pct { font-size: 2.1rem; }
+      .hero-sketch { display: none; }
     }
 
     @media (max-width: 420px) {
@@ -888,8 +885,8 @@
     <header>
       <div class="header-left">
         <div class="season-badge">2026-27 Season</div>
-        <h1>Arsenal <span class="accent">Quad Tracker</span></h1>
-        <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank">Kalshi</a></p>
+        <h1>Arsenal <span class="accent" id="heroAccent">Quad Tracker</span></h1>
+        <p class="header-sub">Live odds from <a href="https://kalshi.com" target="_blank" rel="noopener">Kalshi</a></p>
       </div>
       <!-- Cartoon sketch: player dribbling -->
       <svg class="sketch-player" width="130" height="140" viewBox="0 0 130 140" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -952,13 +949,13 @@
     <div class="trophy-grid" id="trophyGrid"></div>
 
     <!-- Headline multiple: every trophy still winnable -->
-    <div class="pent-section">
+    <div class="hero-section">
       <div class="section-title" id="heroTitle">The Quad</div>
-      <div class="pent-card" id="pentCard">
-        <div class="pent-layout">
-          <div class="pent-body" id="pentContent"></div>
+      <div class="hero-card">
+        <div class="hero-layout">
+          <div class="hero-body" id="heroContent"></div>
           <!-- Cartoon sketch: celebrating player with trophy -->
-          <svg class="pent-sketch-wrap" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="hero-sketch" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#DB0007" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
               <!-- confetti -->
               <rect x="15" y="10" width="4" height="4" rx="1" transform="rotate(15 15 10)" opacity="0.4"/>
@@ -1034,7 +1031,7 @@
 
     <footer>
       <p>
-        Data from <a href="https://kalshi.com" target="_blank">Kalshi</a> prediction markets<br>
+        Data from <a href="https://kalshi.com" target="_blank" rel="noopener">Kalshi</a> prediction markets<br>
         Not financial advice
       </p>
     </footer>
@@ -1045,7 +1042,7 @@
     <div class="share-panel" role="dialog" aria-modal="true" aria-label="Share card">
       <div class="share-head">
         <div class="share-title">Share card</div>
-        <button class="share-close" id="shareClose" onclick="closeShareCard()" aria-label="Close">&times;</button>
+        <button class="share-close" onclick="closeShareCard()" aria-label="Close">&times;</button>
       </div>
       <div class="share-preview"><img id="shareImg" alt="Arsenal 2026-27 trophy odds summary card"></div>
       <div class="share-actions" id="shareActions"></div>
@@ -1087,14 +1084,10 @@
         topN: 3
       },
       {
+        // Out of the competition: kept on the page, priced at zero, never fetched.
         key: 'efl',
-        series: 'KXEFLCUP',
-        arsenalTicker: 'KXEFLCUP-27-ARS',
         compName: 'Carabao Cup',
         title: 'Carabao Cup Winners',
-        kalshiUrl: 'https://kalshi.com/markets/kxeflcup/efl-cup-winner/kxeflcup-27',
-        topN: 2,
-        // Out of the competition: kept on the page, priced at zero.
         eliminated: true,
         outNote: 'Knocked out 27 Oct'
       },
@@ -1122,6 +1115,7 @@
     const HERO_NAME = { 5: 'The Pent', 4: 'The Quad', 3: 'The Treble', 2: 'The Double' }[LIVE.length]
       || `${LIVE.length} trophies`;
     const COUNT_WORD = { 5: 'five', 4: 'four', 3: 'three', 2: 'two' }[LIVE.length] || String(LIVE.length);
+    const HERO_SHORT = HERO_NAME.replace(/^The /, '');
     // A multiple with a knocked-out leg is gone, not merely unlikely.
     const isOut = keys => keys.some(k => (COMPETITIONS.find(c => c.key === k) || {}).eliminated);
 
@@ -1132,53 +1126,50 @@
     // Kalshi lists Ballon d'Or candidates by name with no club, so the squad has
     // to be named here. Worth a look each transfer window.
     const ARSENAL_SQUAD = [
-      'David Raya', 'Kepa Arrizabalaga',
+      'David Raya', 'Kepa Arrizabalaga', 'Illan Meslier',
       'Ben White', 'William Saliba', 'Gabriel', 'Gabriel Magalhaes',
       'Cristhian Mosquera', 'Riccardo Calafiori', 'Jurrien Timber',
-      'Myles Lewis-Skelly', 'Piero Hincapie', 'Ezri Konsa',
+      'Myles Lewis-Skelly', 'Piero Hincapie', 'Ezri Konsa', 'Marli Salmon',
       'Martin Odegaard', 'Declan Rice', 'Martin Zubimendi', 'Mikel Merino',
-      'Bruno Guimaraes', 'Ethan Nwaneri', 'Axel Donczew',
-      'Bukayo Saka', 'Noni Madueke', 'Leandro Trossard', 'Eberechi Eze',
+      'Bruno Guimaraes', 'Ethan Nwaneri', 'Axel Donczew', 'Max Dowman',
+      'Bukayo Saka', 'Noni Madueke', 'Eberechi Eze',
       'Kai Havertz', 'Viktor Gyokeres', 'Christos Tzolis'
     ];
 
+    // Short forms for where Kalshi's own label runs long. Every other club is
+    // shown under the name Kalshi gives it.
     const TEAM_NAMES = {
-      ARS: 'Arsenal', MCI: 'Man City', MUN: 'Man Utd', LFC: 'Liverpool',
-      CHE: 'Chelsea', AVL: 'Aston Villa', TOT: 'Tottenham', NEW: 'Newcastle',
-      WHU: 'West Ham', BRI: 'Brighton', NFO: "Nott'm Forest", BOU: 'Bournemouth',
-      WOL: 'Wolves', FUL: 'Fulham', BRE: 'Brentford', EVE: 'Everton',
-      CRY: 'Crystal Palace', IPS: 'Ipswich', LEI: 'Leicester', SOU: 'Southampton',
-      LEE: 'Leeds', SUN: 'Sunderland', BAR: 'Barcelona', BMU: 'Bayern Munich',
-      RMA: 'Real Madrid', PSG: 'PSG', ATM: 'Atletico', INT: 'Inter',
-      DOR: 'Dortmund', BEN: 'Benfica', JUV: 'Juventus', NAP: 'Napoli',
-      POR: 'Porto', CEL: 'Celtic', SPO: 'Sporting', MIL: 'AC Milan',
-      CAR: 'Cardiff City', WXH: 'Wrexham', GRI: 'Grimsby', WYC: 'Wycombe',
-      SWA: 'Swansea', LEV: 'Leverkusen', FEY: 'Feyenoord', AJA: 'Ajax',
-      MON: 'Monaco', BRU: 'Club Brugge', SHA: 'Shakhtar', SAL: 'Salzburg',
-      GAL: 'Galatasaray', LIL: 'Lille', PSV: 'PSV', STU: 'Stuttgart',
-      BOD: 'Bodo/Glimt', GIR: 'Girona', SLO: 'Slovan', SPA: 'Sparta Prague',
-      DIN: 'Dinamo Zagreb', YBS: 'Young Boys', STE: 'Steaua', BOL: 'Bologna',
-      VIL: 'Villarreal', QAR: 'Qarabag', AST: 'Aston Villa'
+      MCI: 'Man City', MUN: 'Man Utd', NFO: "Nott'm Forest", WOL: 'Wolves',
+      IPS: 'Ipswich', LEE: 'Leeds', SPO: 'Sporting', PSV: 'PSV', SLO: 'Slovan'
     };
 
-    // Prefer the short names above, then whatever Kalshi calls the team, so a
-    // club that has never appeared in the map still renders readably.
+    // Kalshi's labels and tickers are third-party text headed for innerHTML.
+    function esc(text) {
+      return String(text ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
     function getTeamName(market) {
       const code = (market.ticker || '').split('-').pop();
       return TEAM_NAMES[code] || market.yes_sub_title || code;
     }
 
-    // A lone ask is only an upper bound on the price. At 1-2c that is close
-    // enough to be the price (the long tail of any field); far from zero it says
-    // nothing, and a freshly listed market quoting 0 / 95c is not 95% likely.
+    // The midpoint is only a price when the two sides are near each other.
+    //  - No bid at all: the ask is just an upper bound. At 1-2c that is close
+    //    enough to be the price (the long tail of any field); far from zero it
+    //    says nothing, and a new market quoting 0 / 95c is not 95% likely.
+    //  - A bid with a far-off ask (1c / 95c) is the same case with a token bid:
+    //    the ask is a placeholder, so the bid is what the market will pay.
     const MAX_LONE_ASK = 5;
+    const MAX_SPREAD = 25;
 
     function midPrice(m) {
-      const b = m.yes_bid_dollars !== undefined ? parseFloat(m.yes_bid_dollars) * 100 : (m.yes_bid || 0);
-      const a = m.yes_ask_dollars !== undefined ? parseFloat(m.yes_ask_dollars) * 100 : (m.yes_ask || 0);
+      const b = parseFloat(m.yes_bid_dollars) * 100 || 0;
+      const a = parseFloat(m.yes_ask_dollars) * 100 || 0;
       if (!b && !a) return 0;
       if (!b) return a <= MAX_LONE_ASK ? a : 0;
-      if (!a) return b;
+      if (!a || a - b > MAX_SPREAD) return b;
       return (b + a) / 2;
     }
 
@@ -1256,7 +1247,7 @@
             <div class="rivals-header">Market</div>
             <div class="rival-row"><span class="name">No live price</span><span class="odds">&mdash;</span></div>
           </div>
-          <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+          <a class="market-link" href="${comp.kalshiUrl}" target="_blank" rel="noopener">View on Kalshi &rarr;</a>
         </div>`;
     }
 
@@ -1265,7 +1256,7 @@
       const isTop = !rivals.length || pct >= midPrice(rivals[0]);
       let rows = '';
       for (const r of rivals) {
-        rows += `<div class="rival-row"><span class="name">${getTeamName(r)}</span><span class="odds">${midPrice(r).toFixed(1)}%</span></div>`;
+        rows += `<div class="rival-row"><span class="name">${esc(getTeamName(r))}</span><span class="odds">${midPrice(r).toFixed(1)}%</span></div>`;
       }
       return `
         <div class="trophy-card">
@@ -1278,7 +1269,7 @@
             <div class="rivals-header">Chasing</div>
             ${rows}
           </div>
-          <a class="market-link" href="${comp.kalshiUrl}" target="_blank">View on Kalshi &rarr;</a>
+          <a class="market-link" href="${comp.kalshiUrl}" target="_blank" rel="noopener">View on Kalshi &rarr;</a>
         </div>`;
     }
 
@@ -1313,7 +1304,15 @@
       const section = document.getElementById('ballonSection');
       if (!markets.length) { section.hidden = true; return []; }
 
-      const field = rankField(markets);
+      // Two award years can be listed at once. Rank within the one that closes
+      // soonest, as the trophy cards do, or the fields would be pooled.
+      const soonest = markets.reduce((a, m) =>
+        (m.close_time || '9999') < (a.close_time || '9999') ? m : a);
+      const event = soonest.event_ticker;
+      const year = (/-(\d{2})$/.exec(event || '') || [])[1];
+      const award = year ? `Ballon d'Or 20${year}` : "Ballon d'Or";
+
+      const field = rankField(event ? markets.filter(m => m.event_ticker === event) : markets);
       const leader = field[0];
       const arsenal = field.filter(e =>
         ARSENAL_SQUAD_KEYS.has(normalizeName(e.name)) && e.rank <= BALLON_TOP_N);
@@ -1328,17 +1327,17 @@
         return `
         <div class="trophy-card ballon-card">
           <span class="rank-badge ${e.rank === 1 ? 'rank-top' : 'rank-other'}">${e.tiedWith ? 'T' : ''}${e.rank}</span>
-          <div class="comp-label">Ballon d'Or 2026</div>
-          <div class="comp-title">${e.name}</div>
+          <div class="comp-label">${award}</div>
+          <div class="comp-title">${esc(e.name)}</div>
           <div class="player-note">${e.rank}${e.tiedWith ? ' (tied)' : ''} of ${field.length} in the field</div>
           <span class="odds-value">${e.pct.toFixed(1)}%</span><span class="price-note">${e.pct.toFixed(1)}&cent;</span>
           <div class="bar-track"><div class="bar-fill" style="width:${leader.pct ? (e.pct / leader.pct) * 100 : 0}%"></div></div>
           <div class="rivals-section">
             <div class="rivals-header">Field</div>
-            <div class="rival-row"><span class="name">${leader.name} (favourite)</span><span class="odds">${leader.pct.toFixed(1)}%</span></div>
+            <div class="rival-row"><span class="name">${esc(leader.name)} (favourite)</span><span class="odds">${leader.pct.toFixed(1)}%</span></div>
             <div class="rival-row"><span class="name">${tie}</span><span class="odds"></span></div>
           </div>
-          <a class="market-link" href="${BALLON_URL}" target="_blank">View on Kalshi &rarr;</a>
+          <a class="market-link" href="${BALLON_URL}" target="_blank" rel="noopener">View on Kalshi &rarr;</a>
         </div>`;
       }).join('');
 
@@ -1375,12 +1374,14 @@
       const desc = `Win all ${COUNT_WORD} trophies Arsenal can still lift in 2026-27.`
         + (status ? ` ${status.charAt(0).toUpperCase()}${status.slice(1)}.` : '');
       document.getElementById('heroTitle').textContent = HERO_NAME;
-      document.getElementById('pentContent').innerHTML = `
-        <div class="pent-label">${LIVE.map(c => SHORT[c.key]).join(' + ')}</div>
-        <div class="pent-heading">${HERO_NAME}</div>
-        <div class="pent-desc">${desc}</div>
+      document.getElementById('heroAccent').textContent = `${HERO_SHORT} Tracker`;
+      document.title = `Arsenal ${HERO_SHORT} Tracker`;
+      document.getElementById('heroContent').innerHTML = `
+        <div class="hero-label">${LIVE.map(c => SHORT[c.key]).join(' + ')}</div>
+        <div class="hero-heading">${HERO_NAME}</div>
+        <div class="hero-desc">${desc}</div>
         <div class="trophy-tags">${tags}</div>
-        <div class="pent-result">
+        <div class="hero-result">
           <span class="big-pct">${fmtPct(combined)}</span>
           <span class="formula">${formula}</span>
         </div>`;
@@ -1455,14 +1456,14 @@
       ctx.fillText('Every trophy Arsenal can still win this season', x0, 248);
 
       // Headline number.
-      const pent = product(probs, LIVE.map(c => c.key));
+      const combined = product(probs, LIVE.map(c => c.key));
       ctx.fillStyle = RED_TINT;
       roundRect(ctx, x0, 282, inner, 190, 18); ctx.fill();
       ctx.strokeStyle = RED; ctx.lineWidth = 3;
       roundRect(ctx, x0, 282, inner, 190, 18); ctx.stroke();
 
       ctx.fillStyle = RED; ctx.font = face(900, 132);
-      const headline = pent === null ? '—' : `${(pent * 100).toFixed(1)}%`;
+      const headline = combined === null ? '—' : `${(combined * 100).toFixed(1)}%`;
       ctx.fillText(headline, x0 + 44, 424);
       const headlineW = ctx.measureText(headline).width;
 
@@ -1542,8 +1543,14 @@
         ctx.fillStyle = RED; ctx.font = face(800, 20);
         trackedText(ctx, "BALLON D'OR TOP 20", x0 + 26, stripY + 30, 3);
         ctx.fillStyle = INK; ctx.font = face(700, 25);
-        ctx.fillText(ballon.map(e =>
-          `${e.name} · ${e.tiedWith ? 'T' : ''}${e.rank}`).join('   ·   '), x0 + 26, stripY + 58);
+        // Fit as many names as the strip holds and count the rest.
+        const names = ballon.map(e => `${e.name} · ${e.tiedWith ? 'T' : ''}${e.rank}`);
+        let shown = names.length, line = names.join('   ·   ');
+        while (shown > 1 && ctx.measureText(line).width > inner - 52) {
+          shown--;
+          line = `${names.slice(0, shown).join('   ·   ')}   +${names.length - shown} more`;
+        }
+        ctx.fillText(line, x0 + 26, stripY + 58);
       }
 
       ctx.fillStyle = INK_SOFT; ctx.font = face(500, 23);
@@ -1579,7 +1586,8 @@
       // menu for the former and frequently offers nothing for the latter.
       img.src = canvas.toDataURL('image/png');
 
-      const file = new File([blob], 'arsenal-quad-2026-27.png', { type: 'image/png' });
+      const fileName = `arsenal-${HERO_SHORT.toLowerCase().replace(/\W+/g, '-')}-2026-27.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
       actions.innerHTML = '';
 
       // iOS routes this to the share sheet, so Messages is one tap away.
@@ -1592,14 +1600,15 @@
 
       const save = document.createElement('a');
       save.href = url;
-      save.download = 'arsenal-quad-2026-27.png';
+      save.download = fileName;
       save.textContent = 'Save PNG';
       save.className = actions.children.length ? 'ghost' : '';
       actions.appendChild(save);
 
-      hint.textContent = 'On iPhone, long-press the card and choose Add to Photos, '
-        + 'or use Share to send it straight to a thread. It is a 1080 × 1350 PNG, '
-        + 'sized to fill an iMessage bubble without being cropped.';
+      const canShare = actions.children.length > 1;
+      hint.textContent = 'On iPhone, long-press the card and choose Add to Photos'
+        + (canShare ? ', or use Share to send it straight to a thread. ' : '. ')
+        + 'It is a 1080 × 1350 PNG, sized to fill an iMessage bubble without being cropped.';
 
       sheet.hidden = false;
     }
@@ -1616,8 +1625,8 @@
       if (e.target.id === 'shareSheet') closeShareCard();
     });
 
-    // Shown while the markets load, and left in place if the fetch fails, so the
-    // Shield still reads as won rather than as a blank page.
+    // Shown while the first load is in flight, and left in place if it fails, so
+    // the Shield still reads as won rather than as a blank page.
     function renderFallback() {
       const probs = {};
       let html = '';
@@ -1645,7 +1654,9 @@
       btn.classList.add('loading');
       status.className = 'status-text';
       status.textContent = 'Fetching...';
-      renderFallback();
+      // Only before anything real has been drawn: a later refresh keeps the
+      // last good prices on screen until new ones arrive, or if none do.
+      if (!cardState) renderFallback();
       try {
         status.textContent = userInitiated ? 'Re-reading Kalshi...' : 'Fetching all markets...';
         const allData = await fetchAllMarkets({ fresh: userInitiated });
